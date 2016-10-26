@@ -1,0 +1,15 @@
+{
+    "name": "Bcrud",
+    "alias": "bcrud",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Bcrud\\Providers\\BcrudServiceProvider"
+    ],
+    "aliases":{},
+    "files": [
+        "start.php"
+    ]
+}
