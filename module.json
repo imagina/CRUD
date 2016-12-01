@@ -2,7 +2,12 @@
     "name": "Bcrud",
     "alias": "bcrud",
     "description": "",
-    "keywords": [],
+
+    "keywords": [
+        "crud",
+        "asgardcms"
+    ],
+
     "active": 1,
     "order": 0,
     "providers": [
@@ -11,5 +16,16 @@
     "aliases":{},
     "files": [
         "start.php"
-    ]
+    ],
+
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan module:migrate Bcrud",
+            "php artisan asgard:publish:module Bcrud"
+        ],
+        "post-update-cmd": [
+            "php artisan module:migrate Bcrud",
+            "php artisan asgard:publish:module Bcrud"
+        ]
+    },
 }
