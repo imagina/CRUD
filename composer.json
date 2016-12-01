@@ -1,5 +1,5 @@
 {
-    "name": "imagina/asgardcms-bcrud-module",
+    "name": "imagina/bcrud-module",
     "description": "Crud Module for AsgardsCMS based on https://backpackforlaravel.com/",
 	"type": "asgard-module",
     "license": "MIT",
