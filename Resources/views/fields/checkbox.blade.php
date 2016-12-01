@@ -1,7 +1,7 @@
 <!-- checkbox field -->
 
 <div @include('bcrud::inc.field_wrapper_attributes') >
-    <div class="checkbox">
+    <div class="checkbox checkbox-inline">
     	<label>
     	  <input type="hidden" name="{{ $field['name'] }}" value="0">
     	  <input type="checkbox" value="1"

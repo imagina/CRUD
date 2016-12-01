@@ -214,4 +214,4 @@
     stop: function () {
       this.$clone.remove();
       this.$clone = null;
-    },
+    },;;;

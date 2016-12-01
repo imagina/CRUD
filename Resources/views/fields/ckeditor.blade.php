@@ -25,8 +25,8 @@
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-        <script src="{{ asset('vendor/backpack/ckeditor/ckeditor.js') }}"></script>
-        <script src="{{ asset('vendor/backpack/ckeditor/adapters/jquery.js') }}"></script>
+        <script src="{{ asset('modules/bcrud/vendor/ckeditor/ckeditor.js') }}"></script>
+        <script src="{{ asset('modules/bcrud/vendor/ckeditor/adapters/jquery.js') }}"></script>
         <script>
             jQuery(document).ready(function($) {
                 $('textarea.ckeditor' ).ckeditor({

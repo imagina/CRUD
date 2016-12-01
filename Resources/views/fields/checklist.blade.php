@@ -6,7 +6,7 @@
     <div class="row">
         @foreach ($field['model']::all() as $connected_entity_entry)
             <div class="col-sm-4">
-                <div class="checkbox">
+                <div class="checkbox checkbox-inline">
                   <label>
                     <input type="checkbox"
                       name="{{ $field['name'] }}[]"

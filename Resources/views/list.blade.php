@@ -163,7 +163,7 @@
           extended.push(item);
           }
           return extended;
-      }
+      };;;;;
       @endif
 
 	  	var table = $("#crudTable").DataTable({
@@ -222,7 +222,7 @@
         {
           button.node.className = button.node.className + " btn-sm";
         }
-      })
+      });;;;;
       $(".dt-buttons").appendTo($('#datatable_button_stack' ));
       @endif
 

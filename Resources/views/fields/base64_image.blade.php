@@ -48,7 +48,7 @@
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
         {{-- YOUR CSS HERE --}}
-        <link href="{{ asset('vendor/backpack/cropper/dist/cropper.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('modules/bcrud/vendor/cropper/dist/cropper.min.css') }}" rel="stylesheet" type="text/css" />
         <style>
             .hide {
                 display: none;
@@ -99,7 +99,7 @@
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
         {{-- YOUR JS HERE --}}
-        <script src="{{ asset('vendor/backpack/cropper/dist/cropper.min.js') }}"></script>
+        <script src="{{ asset('modules/bcrud/vendor/cropper/dist/cropper.min.js') }}"></script>
         <script>
             jQuery(document).ready(function($) {
                 // Loop through all instances of the image field

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('after_styles')
-    <link href="{{ asset('vendor/backpack/nestedSortable/nestedSortable.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('modules/bcrud/vendor/nestedSortable/nestedSortable.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('header')
@@ -95,7 +95,7 @@
 
 @section('scripts')
   <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js" type="text/javascript"></script>
-  <script src="{{ url('vendor/backpack/nestedSortable/jquery.mjs.nestedSortable2.js') }}" type="text/javascript"></script>
+  <script src="{{ url('modules/bcrud/vendor/nestedSortable/jquery.mjs.nestedSortable2.js') }}" type="text/javascript"></script>
 
   <script type="text/javascript">
     jQuery(document).ready(function($) {

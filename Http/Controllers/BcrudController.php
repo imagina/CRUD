@@ -249,7 +249,7 @@ class BcrudController extends AdminBaseController
         $this->data['title'] = trans('backpack::crud.reorder').' '.$this->crud->entity_name;
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
-        return view('crud::reorder', $this->data);
+        return view('bcrud::reorder', $this->data);
     }
 
     /**
@@ -291,7 +291,7 @@ class BcrudController extends AdminBaseController
         $this->data['crud'] = $this->crud;
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
-        return view('crud::details_row', $this->data);
+        return view('bcrud::details_row', $this->data);
     }
 
     /**
@@ -316,7 +316,7 @@ class BcrudController extends AdminBaseController
 
             // add the buttons as the last column
             if ($this->crud->buttons->where('stack', 'line')->count()) {
-                $row_items[] = \View::make('crud::inc.button_stack', ['stack' => 'line'])
+                $row_items[] = \View::make('bcrud::inc.button_stack', ['stack' => 'line'])
                     ->with('crud', $this->crud)
                     ->with('entry', $entry)
                     ->render();
@@ -324,7 +324,7 @@ class BcrudController extends AdminBaseController
 
             // add the details_row buttons as the first column
             if ($this->crud->details_row) {
-                array_unshift($row_items, \View::make('crud::columns.details_row_button')
+                array_unshift($row_items, \View::make('bcrud::columns.details_row_button')
                     ->with('crud', $this->crud)
                     ->with('entry', $entry)
                     ->render());

@@ -55,11 +55,11 @@
             @php
               $focusField = array_first($fields, function($field){
                   return isset($field['auto_focus']) && $field['auto_focus'] == true;
-              })
+              });;;;;
             @endphp
 
             @if($focusField)
-              window.focusField = $('[name="{{$focusField['name']}}"]').eq(0),
+              window.focusField = $('[name="{{$focusField['name']}}"]').eq(0),;;;;;
             @else
               var focusField = $('form').find('input, textarea, select').not('[type="hidden"]').eq(0),
             @endif

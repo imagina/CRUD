@@ -21,13 +21,13 @@
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
         <!-- include summernote css-->
-        <link href="{{ asset('vendor/backpack/summernote/summernote.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('modules/bcrud/vendor/summernote/summernote.css') }}" rel="stylesheet" type="text/css" />
     @endpush
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
         <!-- include summernote js-->
-        <script src="{{ asset('vendor/backpack/summernote/summernote.min.js') }}"></script>
+        <script src="{{ asset('modules/bcrud/vendor/summernote/summernote.min.js') }}"></script>
         <script>
             jQuery(document).ready(function($) {
                 $('.summernote').summernote();
