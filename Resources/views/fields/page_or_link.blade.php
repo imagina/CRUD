@@ -2,7 +2,7 @@
 <!-- Used in Backpack\MenuCRUD -->
 
 <?php
-    $field['options'] = ['page_link' => trans('backpack::crud.page_link'), 'internal_link' => trans('backpack::crud.internal_link'), 'external_link' => trans('backpack::crud.external_link')];
+    $field['options'] = ['page_link' => trans('bcrud::crud.page_link'), 'internal_link' => trans('bcrud::crud.internal_link'), 'external_link' => trans('backpack::crud.external_link')];
     $field['allows_null'] = false;
     $page_model = $field['page_model'];
     $active_pages = $page_model::all();
@@ -42,7 +42,7 @@
                 type="url"
                 class="form-control"
                 name="link"
-                placeholder="{{ trans('backpack::crud.page_link_placeholder') }}"
+                placeholder="{{ trans('bcrud::crud.page_link_placeholder') }}"
 
                 @if (!isset($entry) || $entry->type!='external_link')
                     disabled="disabled"
@@ -59,7 +59,7 @@
                 type="text"
                 class="form-control"
                 name="link"
-                placeholder="{{ trans('backpack::crud.internal_link_placeholder', ['url', url(config('backpack.base.route_prefix').'/page')]) }}"
+                placeholder="{{ trans('bcrud::crud.internal_link_placeholder', ['url', url(config('bcrud.backpack.base.route_prefix').'/page')]) }}"
 
                 @if (!isset($entry) || $entry->type!='internal_link')
                     disabled="disabled"

@@ -8,12 +8,12 @@
   <section class="content-header">
     <h1>
       <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
-      <small>{{ trans('backpack::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
+      <small>{{ trans('bcrud::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('bcrud::crud.in_the_database') }}.</small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="{{ url(config('backpack.base.route_prefix'), 'dashboard') }}">{{ trans('backpack::crud.admin') }}</a></li>
+      <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
       <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
-      <li class="active">{{ trans('backpack::crud.reorder') }}</li>
+      <li class="active">{{ trans('bcrud::crud.reorder') }}</li>
     </ol>
   </section>
 @endsection
@@ -59,17 +59,17 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
     @if ($crud->hasAccess('list'))
-      <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span></a><br><br>
+      <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span></a><br><br>
     @endif
 
       <!-- Default box -->
       <div class="box">
         <div class="box-header with-border">
-          <h3 class="box-title">{{ trans('backpack::crud.reorder').' '.$crud->entity_name_plural }}</h3>
+          <h3 class="box-title">{{ trans('bcrud::crud.reorder').' '.$crud->entity_name_plural }}</h3>
         </div>
         <div class="box-body">
 
-          <p>{{ trans('backpack::crud.reorder_text') }}</p>
+          <p>{{ trans('bcrud::crud.reorder_text') }}</p>
 
           <ol class="sortable">
             <?php
@@ -85,7 +85,7 @@
             @endforeach
           </ol>
 
-          <button id="toArray" class="btn btn-success ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-save"></i> {{ trans('backpack::crud.save') }}</span></button>
+          <button id="toArray" class="btn btn-success ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-save"></i> {{ trans('bcrud::crud.save') }}</span></button>
 
         </div><!-- /.box-body -->
       </div><!-- /.box -->
@@ -139,16 +139,16 @@
           .done(function() {
             console.log("success");
             new PNotify({
-                        title: "{{ trans('backpack::crud.reorder_success_title') }}",
-                        text: "{{ trans('backpack::crud.reorder_success_message') }}",
+                        title: "{{ trans('bcrud::crud.reorder_success_title') }}",
+                        text: "{{ trans('bcrud::crud.reorder_success_message') }}",
                         type: "success"
                     });
           })
           .fail(function() {
             console.log("error");
             new PNotify({
-                        title: "{{ trans('backpack::crud.reorder_error_title') }}",
-                        text: "{{ trans('backpack::crud.reorder_error_message') }}",
+                        title: "{{ trans('bcrud::crud.reorder_error_title') }}",
+                        text: "{{ trans('bcrud::crud.reorder_error_message') }}",
                         type: "danger"
                     });
           })

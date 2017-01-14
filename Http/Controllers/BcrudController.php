@@ -30,6 +30,8 @@ class BcrudController extends AdminBaseController
 
     public function __construct()
     {
+        parent::__construct();
+
         if (! $this->crud) {
             $this->crud = new CrudPanel();
 
@@ -97,7 +99,7 @@ class BcrudController extends AdminBaseController
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
         $this->data['fields'] = $this->crud->getCreateFields();
-        $this->data['title'] = trans('backpack::crud.add').' '.$this->crud->entity_name;
+        $this->data['title'] = trans('bcrud::crud.add').' '.$this->crud->entity_name;
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view('bcrud::create', $this->data);
@@ -131,7 +133,7 @@ class BcrudController extends AdminBaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+        \Alert::success(trans('bcrud::crud.insert_success'))->flash();
 
         // redirect the user where he chose to be redirected
         switch ($request->input('redirect_after_save')) {
@@ -158,7 +160,7 @@ class BcrudController extends AdminBaseController
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
         $this->data['fields'] = $this->crud->getUpdateFields($id);
-        $this->data['title'] = trans('backpack::crud.edit').' '.$this->crud->entity_name;
+        $this->data['title'] = trans('bcrud::crud.edit').' '.$this->crud->entity_name;
 
         $this->data['id'] = $id;
 
@@ -195,7 +197,7 @@ class BcrudController extends AdminBaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('backpack::crud.update_success'))->flash();
+        \Alert::success(trans('bcrud::crud.update_success'))->flash();
 
         return \Redirect::to($this->crud->route);
     }
@@ -214,7 +216,7 @@ class BcrudController extends AdminBaseController
         // get the info for that entry
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
-        $this->data['title'] = trans('backpack::crud.preview').' '.$this->crud->entity_name;
+        $this->data['title'] = trans('bcrud::crud.preview').' '.$this->crud->entity_name;
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view('bcrud::show', $this->data);

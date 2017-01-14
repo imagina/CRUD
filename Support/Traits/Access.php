@@ -85,7 +85,7 @@ trait Access
     public function hasAccessOrFail($permission)
     {
         if (! in_array($permission, $this->access)) {
-            abort(403, trans('backpack::crud.unauthorized_access'));
+            abort(403, trans('bcrud::crud.unauthorized_access'));
         }
     }
 }

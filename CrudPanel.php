@@ -129,9 +129,9 @@ class CrudPanel
      * Get the current CrudController route.
      *
      * Can be defined in the CrudController with:
-     * - $this->crud->setRoute(config('backpack.base.route_prefix').'/article')
-     * - $this->crud->setRouteName(config('backpack.base.route_prefix').'.article')
-     * - $this->crud->route = config('backpack.base.route_prefix')."/article"
+     * - $this->crud->setRoute(config('bcrud.backpack.base.route_prefix').'/article')
+     * - $this->crud->setRouteName(config('bcrud.backpack.base.route_prefix').'.article')
+     * - $this->crud->route = config('bcrud.backpack.base.route_prefix')."/article"
      *
      * @return [string]
      */

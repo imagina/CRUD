@@ -1,15 +1,21 @@
 @extends('layouts.master')
 
-@section('header')
+@section('after_styles')
+	<!-- DATA TABLES -->
+    <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+
+@endsection
+
+@section('content-header')
 	<section class="content-header">
 	  <h1>
 	    <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
-	    <small>{{ trans('backpack::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
+	    <small>{{ trans('bcrud::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('bcrud::crud.in_the_database') }}.</small>
 	  </h1>
 	  <ol class="breadcrumb">
-	    <li><a href="{{ url(config('backpack.base.route_prefix'), 'dashboard') }}">{{ trans('backpack::crud.admin') }}</a></li>
+	    <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
 	    <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
-	    <li class="active">{{ trans('backpack::crud.list') }}</li>
+	    <li class="active">{{ trans('bcrud::crud.list') }}</li>
 	  </ol>
 	</section>
 @endsection
@@ -48,7 +54,7 @@
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
-                  <th>{{ trans('backpack::crud.actions') }}</th>
+                  <th>{{ trans('bcrud::crud.actions') }}</th>
                 @endif
               </tr>
             </thead>
@@ -103,7 +109,7 @@
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
-                  <th>{{ trans('backpack::crud.actions') }}</th>
+                  <th>{{ trans('bcrud::crud.actions') }}</th>
                 @endif
               </tr>
             </tfoot>
@@ -175,26 +181,26 @@
         /* Disable initial sort */
         "aaSorting": [],
         "language": {
-              "emptyTable":     "{{ trans('backpack::crud.emptyTable') }}",
-              "info":           "{{ trans('backpack::crud.info') }}",
-              "infoEmpty":      "{{ trans('backpack::crud.infoEmpty') }}",
-              "infoFiltered":   "{{ trans('backpack::crud.infoFiltered') }}",
-              "infoPostFix":    "{{ trans('backpack::crud.infoPostFix') }}",
-              "thousands":      "{{ trans('backpack::crud.thousands') }}",
-              "lengthMenu":     "{{ trans('backpack::crud.lengthMenu') }}",
-              "loadingRecords": "{{ trans('backpack::crud.loadingRecords') }}",
-              "processing":     "{{ trans('backpack::crud.processing') }}",
-              "search":         "{{ trans('backpack::crud.search') }}",
-              "zeroRecords":    "{{ trans('backpack::crud.zeroRecords') }}",
+              "emptyTable":     "{{ trans('bcrud::crud.emptyTable') }}",
+              "info":           "{{ trans('bcrud::crud.info') }}",
+              "infoEmpty":      "{{ trans('bcrud::crud.infoEmpty') }}",
+              "infoFiltered":   "{{ trans('bcrud::crud.infoFiltered') }}",
+              "infoPostFix":    "{{ trans('bcrud::crud.infoPostFix') }}",
+              "thousands":      "{{ trans('bcrud::crud.thousands') }}",
+              "lengthMenu":     "{{ trans('bcrud::crud.lengthMenu') }}",
+              "loadingRecords": "{{ trans('bcrud::crud.loadingRecords') }}",
+              "processing":     "{{ trans('bcrud::crud.processing') }}",
+              "search":         "{{ trans('bcrud::crud.search') }}",
+              "zeroRecords":    "{{ trans('bcrud::crud.zeroRecords') }}",
               "paginate": {
-                  "first":      "{{ trans('backpack::crud.paginate.first') }}",
-                  "last":       "{{ trans('backpack::crud.paginate.last') }}",
-                  "next":       "{{ trans('backpack::crud.paginate.next') }}",
-                  "previous":   "{{ trans('backpack::crud.paginate.previous') }}"
+                  "first":      "{{ trans('bcrud::crud.paginate.first') }}",
+                  "last":       "{{ trans('bcrud::crud.paginate.last') }}",
+                  "next":       "{{ trans('bcrud::crud.paginate.next') }}",
+                  "previous":   "{{ trans('bcrud::crud.paginate.previous') }}"
               },
               "aria": {
-                  "sortAscending":  "{{ trans('backpack::crud.aria.sortAscending') }}",
-                  "sortDescending": "{{ trans('backpack::crud.aria.sortDescending') }}"
+                  "sortAscending":  "{{ trans('bcrud::crud.aria.sortAscending') }}",
+                  "sortDescending": "{{ trans('bcrud::crud.aria.sortDescending') }}"
               }
           },
 
@@ -261,15 +267,15 @@
           var delete_button = $(this);
           var delete_url = $(this).attr('href');
 
-          if (confirm("{{ trans('backpack::crud.delete_confirm') }}") == true) {
+          if (confirm("{{ trans('bcrud::crud.delete_confirm') }}") == true) {
               $.ajax({
                   url: delete_url,
                   type: 'DELETE',
                   success: function(result) {
                       // Show an alert with the result
                       new PNotify({
-                          title: "{{ trans('backpack::crud.delete_confirmation_title') }}",
-                          text: "{{ trans('backpack::crud.delete_confirmation_message') }}",
+                          title: "{{ trans('bcrud::crud.delete_confirmation_title') }}",
+                          text: "{{ trans('bcrud::crud.delete_confirmation_message') }}",
                           type: "success"
                       });
                       // delete the row from the table
@@ -278,16 +284,16 @@
                   error: function(result) {
                       // Show an alert with the result
                       new PNotify({
-                          title: "{{ trans('backpack::crud.delete_confirmation_not_title') }}",
-                          text: "{{ trans('backpack::crud.delete_confirmation_not_message') }}",
+                          title: "{{ trans('bcrud::crud.delete_confirmation_not_title') }}",
+                          text: "{{ trans('bcrud::crud.delete_confirmation_not_message') }}",
                           type: "warning"
                       });
                   }
               });
           } else {
               new PNotify({
-                  title: "{{ trans('backpack::crud.delete_confirmation_not_deleted_title') }}",
-                  text: "{{ trans('backpack::crud.delete_confirmation_not_deleted_message') }}",
+                  title: "{{ trans('bcrud::crud.delete_confirmation_not_deleted_title') }}",
+                  text: "{{ trans('bcrud::crud.delete_confirmation_not_deleted_message') }}",
                   type: "info"
               });
           }
@@ -330,7 +336,7 @@
                 })
                 .fail(function(data) {
                   // console.log("-- error getting table extra details row with AJAX");
-                  row.child("<div class='table_row_slider'>{{ trans('backpack::crud.details_row_loading_error') }}</div>").show();
+                  row.child("<div class='table_row_slider'>{{ trans('bcrud::crud.details_row_loading_error') }}</div>").show();
                   tr.addClass('shown');
                   $('div.table_row_slider', row.child()).slideDown();
                 })

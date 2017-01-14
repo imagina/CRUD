@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\BCrud\ModelTraits\Translatable;
+namespace Modules\BCrud\Support\ModelTraits\Translatable;
 
 use Spatie\Translatable\HasTranslations;
 
@@ -119,7 +119,7 @@ trait SpatieTranslatableAdaptor
      */
     public function getAvailableLocales()
     {
-        return config('backpack.crud.locales');
+        return config('bcrud.backpack.crud.locales');
     }
 
     /**

@@ -20,7 +20,7 @@
     </div>
     <div class="btn-group">
         <label class="btn btn-primary btn-file">
-            {{ trans('backpack::crud.choose_file') }} <input type="file" accept="image/*" id="uploadImage"  @include('bcrud::inc.field_attributes', ['default_class' => 'hide'])>
+            {{ trans('bcrud::crud.choose_file') }} <input type="file" accept="image/*" id="uploadImage"  @include('bcrud::inc.field_attributes', ['default_class' => 'hide'])>
             <input type="hidden" id="hiddenImage" name="{{ $field['name'] }}">
         </label>
         @if(isset($field['crop']) && $field['crop'])

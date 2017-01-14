@@ -97,12 +97,30 @@ class BcrudServiceProvider extends ServiceProvider
      */
     protected function registerConfig()
     {
+
+
         $this->publishes([
             __DIR__.'/../Config/config.php' => config_path('bcrud.php'),
         ]);
+
+        $this->publishes([
+            __DIR__.'/../Config/backpack/base.php' => config_path('bcrud/backpack/base.php'),
+        ]);
+
+        $this->publishes([
+            __DIR__.'/../Config/backpack/crud.php' => config_path('bcrud/backpack/crud.php'),
+        ]);
+
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'bcrud'
+            __DIR__.'/../Config/backpack/base.php', 'bcrud.backpack.base'
         );
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/backpack/crud.php', 'bcrud.backpack.crud'
+        );
+
+
+
     }
 
     /**
