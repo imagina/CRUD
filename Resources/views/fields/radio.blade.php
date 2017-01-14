@@ -8,6 +8,7 @@
 
     <div>
         <label>{!! $field['label'] !!}</label>
+        @include('bcrud::inc.field_translatable_icon')
     </div>
 
     @if( isset($field['options']) && is_array($field['options']) )
@@ -18,14 +19,14 @@
             @if( isset($field['inline']) && $field['inline'] )
 
             <label class="radio-inline" for="{{$field['name']}}_{{$optionPointer}}">
-                <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}" value="{{$value}}" {{$optionValue!='' && $optionValue == $value ? ' checked': ''}}> {!! $label !!}
+                <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}" value="{{$value}}" {{$optionValue == $value ? ' checked': ''}}> {!! $label !!}
             </label>
 
             @else
 
             <div class="radio">
                 <label for="{{$field['name']}}_{{$optionPointer}}">
-                    <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}" value="{{$value}}" {{$optionValue!='' && $optionValue == $value ? ' checked': ''}}> {!! $label !!}
+                    <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}" value="{{$value}}" {{$optionValue == $value ? ' checked': ''}}> {!! $label !!}
                 </label>
             </div>
 

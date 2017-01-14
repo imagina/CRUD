@@ -1,12 +1,13 @@
 <!-- select2 -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
     <?php $entity_model = $crud->getModel(); ?>
 
     <div class="row">
         @foreach ($field['model']::all() as $connected_entity_entry)
             <div class="col-sm-4">
-                <div class="checkbox checkbox-inline">
+                <div class="checkbox">
                   <label>
                     <input type="checkbox"
                       name="{{ $field['name'] }}[]"

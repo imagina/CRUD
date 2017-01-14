@@ -1,6 +1,7 @@
 <!-- html5 time input -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
     <input
     	type="time"
     	name="{{ $field['name'] }}"

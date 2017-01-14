@@ -16,10 +16,11 @@ if (is_array($value)) {
 
 
 <div data-video @include('bcrud::inc.field_wrapper_attributes') >
-    <label for="{{ $field['name'] }}_link}">{!! $field['label'] !!}</label>
+    <label for="{{ $field['name'] }}_link">{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
     <input class="video-json" type="hidden" name="{{ $field['name'] }}" value="{{ $value }}">
     <div class="input-group">
-        <input @include('bcrud::inc.field_attributes', ['default_class' => 'video-link form-control']) type="text" name="{{ $field['name'] }}_link" id="{{ $field['name'] }}_link">
+        <input @include('bcrud::inc.field_attributes', ['default_class' => 'video-link form-control']) type="text" id="{{ $field['name'] }}_link">
         <div class="input-group-addon video-previewSuffix video-noPadding">
             <div class="video-preview">
                 <span class="video-previewImage"></span>

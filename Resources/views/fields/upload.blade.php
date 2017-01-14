@@ -1,6 +1,7 @@
 <!-- text input -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
 
 	{{-- Show the file name and a "Clear" button on EDIT form. --}}
     @if (isset($field['value']) && $field['value']!=null)

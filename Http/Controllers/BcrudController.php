@@ -2,53 +2,58 @@
 
 namespace Modules\Bcrud\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use Modules\BCrud\CrudPanel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Form as Form;
-use Modules\Bcrud\Http\Requests\CrudRequest as StoreRequest;
-use Modules\Bcrud\Http\Requests\CrudRequest as UpdateRequest;
-use Modules\Bcrud\CrudPanel;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Modules\BCrud\Http\Controllers\CrudFeatures\Reorder;
+use Modules\BCrud\Http\Controllers\CrudFeatures\AjaxTable;
 // CRUD Traits for non-core features
-use Modules\Bcrud\Http\Controllers\CrudFeatures\AjaxTable;
-use Modules\Bcrud\Http\Controllers\CrudFeatures\Reorder;
-use Modules\Bcrud\Http\Controllers\CrudFeatures\Revisions;
-use Modules\Bcrud\Http\Controllers\CrudFeatures\ShowDetailsRow;
+use Modules\BCrud\Http\Controllers\CrudFeatures\Revisions;
+use Modules\BCrud\Http\Requests\CrudRequest as StoreRequest;
+use Modules\BCrud\Http\Requests\CrudRequest as UpdateRequest;
+use Modules\BCrud\Http\Controllers\CrudFeatures\ShowDetailsRow;
+
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use LiveControl\EloquentDataTable\DataTable;
 
 class BcrudController extends AdminBaseController
 {
-    //use DispatchesJobs, ValidatesRequests;
-    //use AjaxTable, Reorder, Revisions, ShowDetailsRow;
+    use DispatchesJobs, ValidatesRequests;
+    use AjaxTable, Reorder, Revisions, ShowDetailsRow;
 
     public $data = [];
     public $crud;
+    public $request;
 
     public function __construct()
     {
-
-        parent::__construct();
-
-        $this->crud = new CrudPanel();
-
-        $pnotify = [
-            'pnotifyjs' => 'modules/bcrud/vendor/pnotify/pnotify.custom.min.js',
-            'pnotifycss' => 'modules/bcrud/vendor/pnotify/pnotify.custom.min.css'
-        ];
+        if (! $this->crud) {
+            $this->crud = new CrudPanel();
 
 
-        $this->assetManager->addAssets($pnotify);
-        $this->assetPipeline->requireJs('pnotifyjs');
-        $this->assetPipeline->requireCss('pnotifycss');
+            $pnotify = [
+                'pnotifyjs' => 'modules/bcrud/vendor/pnotify/pnotify.custom.min.js',
+                'pnotifycss' => 'modules/bcrud/vendor/pnotify/pnotify.custom.min.css'
+            ];
 
-        // call the setup function inside this closure to also have the request there
-        // this way, developers can use things stored in session (auth variables, etc)
-        $this->middleware(function ($request, $next) {
-            $this->setup();
 
-            return $next($request);
-        });
+            $this->assetManager->addAssets($pnotify);
+            $this->assetPipeline->requireJs('pnotifyjs');
+            $this->assetPipeline->requireCss('pnotifycss');
+
+            // call the setup function inside this closure to also have the request there
+            // this way, developers can use things stored in session (auth variables, etc)
+            $this->middleware(function ($request, $next) {
+                $this->request = $request;
+                $this->crud->request = $request;
+                $this->setup();
+
+                return $next($request);
+            });
+        }
     }
 
     /**
@@ -74,8 +79,6 @@ class BcrudController extends AdminBaseController
         if (! $this->data['crud']->ajaxTable()) {
             $this->data['entries'] = $this->data['crud']->getEntries();
         }
-
-
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         // $this->crud->getListView() returns 'list' by default, or 'list_ajax' if ajax was enabled
@@ -125,15 +128,18 @@ class BcrudController extends AdminBaseController
 
         // insert item in the db
         $item = $this->crud->create($request->except(['redirect_after_save', '_token']));
+        $this->data['entry'] = $this->crud->entry = $item;
 
+        // show a success message
+        \Alert::success(trans('backpack::crud.insert_success'))->flash();
 
         // redirect the user where he chose to be redirected
         switch ($request->input('redirect_after_save')) {
             case 'current_item_edit':
-                return \Redirect::to($this->crud->route.'/'.$item->getKey().'/edit')->withSuccess(trans('bcrud::crud.update_success'));
+                return \Redirect::to($this->crud->route.'/'.$item->getKey().'/edit');
 
             default:
-                return \Redirect::to($request->input('redirect_after_save'))->withSuccess(trans('bcrud::crud.update_success'));
+                return \Redirect::to($request->input('redirect_after_save'));
         }
     }
 
@@ -184,13 +190,14 @@ class BcrudController extends AdminBaseController
         }
 
         // update the row in the db
-        $this->crud->update($request->get($this->crud->model->getKeyName()),
-                            $request->except('redirect_after_save', '_token'));
+        $item = $this->crud->update($request->get($this->crud->model->getKeyName()),
+            $request->except('redirect_after_save', '_token', '_method'));
+        $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        //\Alert::success(trans('backpack::crud.update_success'))->flash();
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
 
-        return \Redirect::to($this->crud->route)->withSuccess(trans('bcrud::crud.update_success'));
+        return \Redirect::to($this->crud->route);
     }
 
     /**
@@ -200,7 +207,7 @@ class BcrudController extends AdminBaseController
      *
      * @return Response
      */
-    public function show($id=null)
+    public function show($id)
     {
         $this->crud->hasAccessOrFail('show');
 
@@ -225,114 +232,5 @@ class BcrudController extends AdminBaseController
         $this->crud->hasAccessOrFail('delete');
 
         return $this->crud->delete($id);
-    }
-
-
-    /**
-     *  Reorder the items in the database using the Nested Set pattern.
-     *
-     *	Database columns needed: id, parent_id, lft, rgt, depth, name/title
-     *
-     *  @return Response
-     */
-    public function reorder()
-    {
-        $this->crud->hasAccessOrFail('reorder');
-
-        if (! $this->crud->isReorderEnabled()) {
-            abort(403, 'Reorder is disabled.');
-        }
-
-        // get all results for that entity
-        $this->data['entries'] = $this->crud->getEntries();
-        $this->data['crud'] = $this->crud;
-        $this->data['title'] = trans('backpack::crud.reorder').' '.$this->crud->entity_name;
-
-        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
-        return view('bcrud::reorder', $this->data);
-    }
-
-    /**
-     * Save the new order, using the Nested Set pattern.
-     *
-     * Database columns needed: id, parent_id, lft, rgt, depth, name/title
-     *
-     * @return
-     */
-    public function saveReorder()
-    {
-        $this->crud->hasAccessOrFail('reorder');
-
-        $all_entries = \Request::input('tree');
-
-        if (count($all_entries)) {
-            $count = $this->crud->updateTreeOrder($all_entries);
-        } else {
-            return false;
-        }
-
-        return 'success for '.$count.' items';
-    }
-
-    /**
-     * Used with AJAX in the list view (datatables) to show extra information about that row that didn't fit in the table.
-     * It defaults to showing some dummy text.
-     *
-     * It's enabled by:
-     * - setting: $crud->details_row = true;
-     * - adding the details route for the entity; ex: Route::get('page/{id}/details', 'PageCrudController@showDetailsRow');
-     * - adding a view with the following name to change what the row actually contains: app/resources/views/vendor/backpack/crud/details_row.blade.php
-     */
-    public function showDetailsRow($id)
-    {
-        $this->crud->hasAccessOrFail('details_row');
-
-        $this->data['entry'] = $this->crud->getEntry($id);
-        $this->data['crud'] = $this->crud;
-
-        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
-        return view('bcrud::details_row', $this->data);
-    }
-
-    /**
-     * Respond with the JSON of one or more rows, depending on the POST parameters.
-     * @return JSON Array of cells in HTML form.
-     */
-    public function search()
-    {
-        $this->crud->hasAccessOrFail('list');
-
-        // add the primary key, even though you don't show it,
-        // otherwise the buttons won't work
-        $columns = collect($this->crud->columns)->pluck('name')->merge($this->crud->model->getKeyName())->toArray();
-
-        // structure the response in a DataTable-friendly way
-        $dataTable = new DataTable($this->crud->query, $columns);
-
-        // make the datatable use the column types instead of just echoing the text
-        $dataTable->setFormatRowFunction(function ($entry) {
-            // get the actual HTML for each row's cell
-            $row_items = $this->crud->getRowViews($entry, $this->crud);
-
-            // add the buttons as the last column
-            if ($this->crud->buttons->where('stack', 'line')->count()) {
-                $row_items[] = \View::make('bcrud::inc.button_stack', ['stack' => 'line'])
-                    ->with('crud', $this->crud)
-                    ->with('entry', $entry)
-                    ->render();
-            }
-
-            // add the details_row buttons as the first column
-            if ($this->crud->details_row) {
-                array_unshift($row_items, \View::make('bcrud::columns.details_row_button')
-                    ->with('crud', $this->crud)
-                    ->with('entry', $entry)
-                    ->render());
-            }
-
-            return $row_items;
-        });
-
-        return $dataTable->make();
     }
 }

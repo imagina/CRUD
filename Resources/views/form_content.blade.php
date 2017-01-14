@@ -3,7 +3,7 @@
   @if ($errors->any())
   	<div class="col-md-12">
   		<div class="callout callout-danger">
-	        <h4>{{ trans('bcrud::crud.please_fix') }}</h4>
+	        <h4>{{ trans('backpack::crud.please_fix') }}</h4>
 	        <ul>
 			@foreach($errors->all() as $error)
 				<li>{{ $error }}</li>
@@ -11,6 +11,10 @@
 			</ul>
 		</div>
   	</div>
+  @endif
+
+  @if ($crud->model->translationEnabled())
+    <input type="hidden" name="locale" value={{ $crud->request->input('locale')?$crud->request->input('locale'):App::getLocale() }}>
   @endif
 
   {{-- Show the inputs --}}
@@ -55,11 +59,11 @@
             @php
               $focusField = array_first($fields, function($field){
                   return isset($field['auto_focus']) && $field['auto_focus'] == true;
-              });;;;;
+              })
             @endphp
 
             @if($focusField)
-              window.focusField = $('[name="{{$focusField['name']}}"]').eq(0),;;;;;
+              window.focusField = $('[name="{{$focusField['name']}}"]').eq(0),
             @else
               var focusField = $('form').find('input, textarea, select').not('[type="hidden"]').eq(0),
             @endif

@@ -1,121 +1,134 @@
 @extends('layouts.master')
 
-@section('after_styles')
-	<!-- DATA TABLES -->
-    <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
-
-@endsection
-
-@section('content-header')
+@section('header')
 	<section class="content-header">
 	  <h1>
 	    <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
-	    <small>{{ trans('bcrud::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('bcrud::crud.in_the_database') }}.</small>
+	    <small>{{ trans('backpack::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
 	  </h1>
 	  <ol class="breadcrumb">
-        <li><a href="{{ url('dashboard.index') }}"><i class="fa fa-dashboard"></i> {{ trans('core::core.breadcrumb.home') }}</a></li>
+	    <li><a href="{{ url(config('backpack.base.route_prefix'), 'dashboard') }}">{{ trans('backpack::crud.admin') }}</a></li>
 	    <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
-	    <li class="active">{{ trans('bcrud::crud.list') }}</li>
+	    <li class="active">{{ trans('backpack::crud.list') }}</li>
 	  </ol>
 	</section>
 @endsection
 
 @section('content')
 <!-- Default box -->
-  <div class="box">
-    <div class="box-header {{ $crud->hasAccess('create')?'with-border':'' }}">
+  <div class="row">
 
-      @include('bcrud::inc.button_stack', ['stack' => 'top'])
+    <!-- THE ACTUAL CONTENT -->
+    <div class="col-md-12">
+      <div class="box">
+        <div class="box-header {{ $crud->hasAccess('create')?'with-border':'' }}">
 
-      <div id="datatable_button_stack" class="pull-right text-right"></div>
-    </div>
-    <div class="box-body">
+          @include('bcrud::inc.button_stack', ['stack' => 'top'])
 
-		<table id="crudTable" class="table table-bordered table-striped display">
-        <thead>
-          <tr>
-            @if ($crud->details_row)
-              <th></th> <!-- expand/minimize button column -->
-            @endif
+          <div id="datatable_button_stack" class="pull-right text-right"></div>
+        </div>
 
-            {{-- Table columns --}}
-            @foreach ($crud->columns as $column)
-              <th>{{ $column['label'] }}</th>
-            @endforeach
+        <div class="box-body">
 
-            @if ( $crud->buttons->where('stack', 'line')->count() )
-              <th>{{ trans('bcrud::crud.actions') }}</th>
-            @endif
-          </tr>
-        </thead>
-        <tbody>
+        {{-- Backpack List Filters --}}
+        @if ($crud->filters->count())
+          @include('bcrud::inc.filters_navbar')
+        @endif
 
-          @if (!$crud->ajaxTable())
-            @foreach ($entries as $k => $entry)
-            <tr data-entry-id="{{ $entry->getKey() }}">
-
-              @if ($crud->details_row)
-                @include('bcrud::columns.details_row_button')
-              @endif
-
-              {{-- load the view from the application if it exists, otherwise load the one in the package --}}
-              @foreach ($crud->columns as $column)
-                @if (!isset($column['type']))
-                  @include('bcrud::columns.text')
-                @else
-                  @if(view()->exists('vendor.backpack.crud.columns.'.$column['type']))
-                    @include('vendor.backpack.crud.columns.'.$column['type'])
-                  @else
-                    @if(view()->exists('bcrud::columns.'.$column['type']))
-                      @include('bcrud::columns.'.$column['type'])
-                    @else
-                      @include('bcrud::columns.text')
-                    @endif
-                  @endif
+        <table id="crudTable" class="table table-bordered table-striped display">
+            <thead>
+              <tr>
+                @if ($crud->details_row)
+                  <th></th> <!-- expand/minimize button column -->
                 @endif
 
-              @endforeach
+                {{-- Table columns --}}
+                @foreach ($crud->columns as $column)
+                  <th>{{ $column['label'] }}</th>
+                @endforeach
 
-              @if ($crud->buttons->where('stack', 'line')->count())
-                <td>
-                  @include('bcrud::inc.button_stack', ['stack' => 'line'])
-                </td>
+                @if ( $crud->buttons->where('stack', 'line')->count() )
+                  <th>{{ trans('backpack::crud.actions') }}</th>
+                @endif
+              </tr>
+            </thead>
+            <tbody>
+
+              @if (!$crud->ajaxTable())
+                @foreach ($entries as $k => $entry)
+                <tr data-entry-id="{{ $entry->getKey() }}">
+
+                  @if ($crud->details_row)
+                    @include('bcrud::columns.details_row_button')
+                  @endif
+
+                  {{-- load the view from the application if it exists, otherwise load the one in the package --}}
+                  @foreach ($crud->columns as $column)
+                    @if (!isset($column['type']))
+                      @include('bcrud::columns.text')
+                    @else
+                      @if(view()->exists('vendor.backpack.crud.columns.'.$column['type']))
+                        @include('vendor.backpack.crud.columns.'.$column['type'])
+                      @else
+                        @if(view()->exists('bcrud::columns.'.$column['type']))
+                          @include('bcrud::columns.'.$column['type'])
+                        @else
+                          @include('bcrud::columns.text')
+                        @endif
+                      @endif
+                    @endif
+
+                  @endforeach
+
+                  @if ($crud->buttons->where('stack', 'line')->count())
+                    <td>
+                      @include('bcrud::inc.button_stack', ['stack' => 'line'])
+                    </td>
+                  @endif
+
+                </tr>
+                @endforeach
               @endif
 
-            </tr>
-            @endforeach
-          @endif
+            </tbody>
+            <tfoot>
+              <tr>
+                @if ($crud->details_row)
+                  <th></th> <!-- expand/minimize button column -->
+                @endif
 
-        </tbody>
-        <tfoot>
-          <tr>
-            @if ($crud->details_row)
-              <th></th> <!-- expand/minimize button column -->
-            @endif
+                {{-- Table columns --}}
+                @foreach ($crud->columns as $column)
+                  <th>{{ $column['label'] }}</th>
+                @endforeach
 
-            {{-- Table columns --}}
-            @foreach ($crud->columns as $column)
-              <th>{{ $column['label'] }}</th>
-            @endforeach
+                @if ( $crud->buttons->where('stack', 'line')->count() )
+                  <th>{{ trans('backpack::crud.actions') }}</th>
+                @endif
+              </tr>
+            </tfoot>
+          </table>
 
-            @if ( $crud->buttons->where('stack', 'line')->count() )
-              <th>{{ trans('bcrud::crud.actions') }}</th>
-            @endif
-          </tr>
-        </tfoot>
-      </table>
+        </div><!-- /.box-body -->
 
-    </div><!-- /.box-body -->
+        @include('bcrud::inc.button_stack', ['stack' => 'bottom'])
 
-    @include('bcrud::inc.button_stack', ['stack' => 'bottom'])
+      </div><!-- /.box -->
+    </div>
 
-  </div><!-- /.box -->
+  </div>
+
+@endsection
+
+@section('after_styles')
+  <!-- DATA TABLES -->
+    <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+
+  <!-- CRUD LIST CONTENT - crud_list_styles stack -->
+  @stack('crud_list_styles')
 @endsection
 
 @section('scripts')
-
-
-
 	<!-- DATA TABLES SCRIPT -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
 
@@ -136,15 +149,6 @@
 	<script type="text/javascript">
 	  jQuery(document).ready(function($) {
 
-      $.ajaxPrefilter(function(options, originalOptions, xhr) {
-          var token = $('meta[name="token"]').attr('value');
-
-          if (token) {
-              return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-          }
-      });
-
-
       @if ($crud->exportButtons())
       var dtButtons = function(buttons){
           var extended = [];
@@ -163,32 +167,34 @@
           extended.push(item);
           }
           return extended;
-      };;;;;
+      }
       @endif
 
 	  	var table = $("#crudTable").DataTable({
         "pageLength": {{ $crud->getDefaultPageLength() }},
+        /* Disable initial sort */
+        "aaSorting": [],
         "language": {
-              "emptyTable":     "{{ trans('bcrud::crud.emptyTable') }}",
-              "info":           "{{ trans('bcrud::crud.info') }}",
-              "infoEmpty":      "{{ trans('bcrud::crud.infoEmpty') }}",
-              "infoFiltered":   "{{ trans('bcrud::crud.infoFiltered') }}",
-              "infoPostFix":    "{{ trans('bcrud::crud.infoPostFix') }}",
-              "thousands":      "{{ trans('bcrud::crud.thousands') }}",
-              "lengthMenu":     "{{ trans('bcrud::crud.lengthMenu') }}",
-              "loadingRecords": "{{ trans('bcrud::crud.loadingRecords') }}",
-              "processing":     "{{ trans('bcrud::crud.processing') }}",
-              "search":         "{{ trans('bcrud::crud.search') }}",
-              "zeroRecords":    "{{ trans('bcrud::crud.zeroRecords') }}",
+              "emptyTable":     "{{ trans('backpack::crud.emptyTable') }}",
+              "info":           "{{ trans('backpack::crud.info') }}",
+              "infoEmpty":      "{{ trans('backpack::crud.infoEmpty') }}",
+              "infoFiltered":   "{{ trans('backpack::crud.infoFiltered') }}",
+              "infoPostFix":    "{{ trans('backpack::crud.infoPostFix') }}",
+              "thousands":      "{{ trans('backpack::crud.thousands') }}",
+              "lengthMenu":     "{{ trans('backpack::crud.lengthMenu') }}",
+              "loadingRecords": "{{ trans('backpack::crud.loadingRecords') }}",
+              "processing":     "{{ trans('backpack::crud.processing') }}",
+              "search":         "{{ trans('backpack::crud.search') }}",
+              "zeroRecords":    "{{ trans('backpack::crud.zeroRecords') }}",
               "paginate": {
-                  "first":      "{{ trans('bcrud::crud.paginate.first') }}",
-                  "last":       "{{ trans('bcrud::crud.paginate.last') }}",
-                  "next":       "{{ trans('bcrud::crud.paginate.next') }}",
-                  "previous":   "{{ trans('bcrud::crud.paginate.previous') }}"
+                  "first":      "{{ trans('backpack::crud.paginate.first') }}",
+                  "last":       "{{ trans('backpack::crud.paginate.last') }}",
+                  "next":       "{{ trans('backpack::crud.paginate.next') }}",
+                  "previous":   "{{ trans('backpack::crud.paginate.previous') }}"
               },
               "aria": {
-                  "sortAscending":  "{{ trans('bcrud::crud.aria.sortAscending') }}",
-                  "sortDescending": "{{ trans('bcrud::crud.aria.sortDescending') }}"
+                  "sortAscending":  "{{ trans('backpack::crud.aria.sortAscending') }}",
+                  "sortDescending": "{{ trans('backpack::crud.aria.sortDescending') }}"
               }
           },
 
@@ -196,7 +202,7 @@
           "processing": true,
           "serverSide": true,
           "ajax": {
-              "url": "{{ url($crud->route.'/search') }}",
+              "url": "{{ url($crud->route.'/search').'?'.Request::getQueryString() }}",
               "type": "POST"
           },
           @endif
@@ -222,11 +228,17 @@
         {
           button.node.className = button.node.className + " btn-sm";
         }
-      });;;;;
+      })
       $(".dt-buttons").appendTo($('#datatable_button_stack' ));
       @endif
 
+      $.ajaxPrefilter(function(options, originalOptions, xhr) {
+          var token = $('meta[('meta[name="token"]').attr('value');
 
+          if (token) {
+                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+          }
+      });
 
       // make the delete button work in the first result page
       register_delete_button_action();
@@ -249,15 +261,15 @@
           var delete_button = $(this);
           var delete_url = $(this).attr('href');
 
-          if (confirm("{{ trans('bcrud::crud.delete_confirm') }}") == true) {
+          if (confirm("{{ trans('backpack::crud.delete_confirm') }}") == true) {
               $.ajax({
                   url: delete_url,
                   type: 'DELETE',
                   success: function(result) {
                       // Show an alert with the result
                       new PNotify({
-                          title: "{{ trans('bcrud::crud.delete_confirmation_title') }}",
-                          text: "{{ trans('bcrud::crud.delete_confirmation_message') }}",
+                          title: "{{ trans('backpack::crud.delete_confirmation_title') }}",
+                          text: "{{ trans('backpack::crud.delete_confirmation_message') }}",
                           type: "success"
                       });
                       // delete the row from the table
@@ -266,16 +278,16 @@
                   error: function(result) {
                       // Show an alert with the result
                       new PNotify({
-                          title: "{{ trans('bcrud::crud.delete_confirmation_not_title') }}",
-                          text: "{{ trans('bcrud::crud.delete_confirmation_not_message') }}",
+                          title: "{{ trans('backpack::crud.delete_confirmation_not_title') }}",
+                          text: "{{ trans('backpack::crud.delete_confirmation_not_message') }}",
                           type: "warning"
                       });
                   }
               });
           } else {
               new PNotify({
-                  title: "{{ trans('bcrud::crud.delete_confirmation_not_deleted_title') }}",
-                  text: "{{ trans('bcrud::crud.delete_confirmation_not_deleted_message') }}",
+                  title: "{{ trans('backpack::crud.delete_confirmation_not_deleted_title') }}",
+                  text: "{{ trans('backpack::crud.delete_confirmation_not_deleted_message') }}",
                   type: "info"
               });
           }
@@ -318,7 +330,7 @@
                 })
                 .fail(function(data) {
                   // console.log("-- error getting table extra details row with AJAX");
-                  row.child("<div class='table_row_slider'>{{ trans('bcrud::crud.details_row_loading_error') }}</div>").show();
+                  row.child("<div class='table_row_slider'>{{ trans('backpack::crud.details_row_loading_error') }}</div>").show();
                   tr.addClass('shown');
                   $('div.table_row_slider', row.child()).slideDown();
                 })
@@ -335,4 +347,7 @@
 
 	  });
 	</script>
+
+  <!-- CRUD LIST CONTENT - crud_list_scripts stack -->
+  @stack('crud_list_scripts')
 @endsection

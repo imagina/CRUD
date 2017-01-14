@@ -11,7 +11,7 @@
         2: function(masc) { return (masc ? "dva" : "dvě"); },
         3: function() { return "tři"; },
         4: function() { return "čtyři"; }
-    };;;
+    }
     $.fn.select2.locales['cs'] = {
         formatNoMatches: function () { return "Nenalezeny žádné položky"; },
         formatInputTooShort: function (input, min) {

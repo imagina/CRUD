@@ -1,6 +1,7 @@
 <!-- CKeditor -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
     <textarea
     	id="ckeditor-{{ $field['name'] }}"
         name="{{ $field['name'] }}"
@@ -27,16 +28,21 @@
     @push('crud_fields_scripts')
         <script src="{{ asset('modules/bcrud/vendor/ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('modules/bcrud/vendor/ckeditor/adapters/jquery.js') }}"></script>
-        <script>
-            jQuery(document).ready(function($) {
-                $('textarea.ckeditor' ).ckeditor({
-                    "filebrowserBrowseUrl": "{{ url(config('backpack.base.route_prefix').'/elfinder/ckeditor') }}",
-                    "extraPlugins" : 'oembed,widget'
-                });
-            });
-        </script>
     @endpush
 
 @endif
+
+{{-- FIELD JS - will be loaded in the after_scripts section --}}
+@push('crud_fields_scripts')
+<script>
+    jQuery(document).ready(function($) {
+        $('textarea[name="{{ $field['name'] }}"].ckeditor').ckeditor({
+            "filebrowserBrowseUrl": "{{ route('media.grid.ckeditor') }}",
+            "extraPlugins" : '{{ isset($field['extra_plugins']) ? implode(',', $field['extra_plugins']) : 'oembed,widget' }}'
+        });
+    });
+</script>
+@endpush
+
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}

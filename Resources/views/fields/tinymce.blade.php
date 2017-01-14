@@ -1,6 +1,7 @@
 <!-- Tiny MCE -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
     <textarea
     	id="tinymce-{{ $field['name'] }}"
         name="{{ $field['name'] }}"

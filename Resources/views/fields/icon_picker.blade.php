@@ -9,6 +9,7 @@
 
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
 
     <div>
         <button class="btn btn-default " role="iconpicker" data-icon="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}" data-iconset="{{ $field['iconset'] }}"></button>

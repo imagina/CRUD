@@ -3,6 +3,7 @@
 <div @include('bcrud::inc.field_wrapper_attributes') >
 
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
 
     <?php $entity_model = $crud->model; ?>
     <select

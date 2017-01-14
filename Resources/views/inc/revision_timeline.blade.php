@@ -12,13 +12,13 @@
     <div class="timeline-item">
       <span class="time"><i class="fa fa-clock-o"></i> {{ date('h:ia', strtotime($history->created_at)) }}</span>
       @if($history->key == 'created_at' && !$history->old_value)
-        <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ trans('bcrud::crud.created_this') }} {{ $crud->entity_name }}</h3>
+        <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ trans('backpack::crud.created_this') }} {{ $crud->entity_name }}</h3>
       @else
-        <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ trans('bcrud::crud.changed_the') }} {{ $history->fieldName() }}</h3>
+        <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ trans('backpack::crud.changed_the') }} {{ $history->fieldName() }}</h3>
         <div class="timeline-body p-b-0">
           <div class="row">
-            <div class="col-md-6">{{ ucfirst(trans('bcrud::crud.from')) }}:</div>
-            <div class="col-md-6">{{ ucfirst(trans('bcrud::crud.to')) }}:</div>
+            <div class="col-md-6">{{ ucfirst(trans('backpack::crud.from')) }}:</div>
+            <div class="col-md-6">{{ ucfirst(trans('backpack::crud.to')) }}:</div>
           </div>
           <div class="row">
             <div class="col-md-6"><div class="well well-sm" style="overflow: hidden;">{{ $history->oldValue() }}</div></div>
@@ -28,7 +28,7 @@
         <div class="timeline-footer p-t-0">
           {!! Form::open(array('url' => \Request::url().'/'.$history->id.'/restore', 'method' => 'post')) !!}
           <button type="submit" class="btn btn-primary btn-sm restore-btn" data-entry-id="{{ $entry->id }}" data-revision-id="{{ $history->id }}" onclick="onRestoreClick(event)">
-            <i class="fa fa-undo"></i> {{ trans('bcrud::crud.undo') }}</button>
+            <i class="fa fa-undo"></i> {{ trans('backpack::crud.undo') }}</button>
           {!! Form::close() !!}
         </div>
       @endif
@@ -41,7 +41,7 @@
 @section('scripts')
   <script type="text/javascript">
     $.ajaxPrefilter(function(options, originalOptions, xhr) {
-        var token = $('meta[name="token"]').attr('value');
+        var token = $('meta[('meta[name="token"]').attr('value');
 
         if (token) {
               return xhr.setRequestHeader('X-CSRF-TOKEN', token);
@@ -63,7 +63,7 @@
           // Animate the new revision in (by sliding)
           $('.timeline-item-wrap').first().addClass('fadein');
           new PNotify({
-              text: '{{ trans('bcrud::crud.revision_restored') }}',
+              text: '{{ trans('backpack::crud.revision_restored') }}',
               type: 'success'
           });
         }

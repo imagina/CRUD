@@ -1,11 +1,12 @@
 <!-- select2 multiple -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
+    @include('bcrud::inc.field_translatable_icon')
     <select
         name="{{ $field['name'] }}[]"
         @include('bcrud::inc.field_attributes', ['default_class' =>  'form-control select2'])
         multiple>
-        
+
         @if (isset($field['model']))
             @foreach ($field['model']::all() as $connected_entity_entry)
                 <option value="{{ $connected_entity_entry->getKey() }}"
