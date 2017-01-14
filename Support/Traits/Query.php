@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Bcrud\Support\Traits;
+namespace Modules\BCrud\Support\Traits;
 
 trait Query
 {
@@ -25,6 +25,19 @@ trait Query
     public function addClause($function)
     {
         return call_user_func_array([$this->query, $function], array_slice(func_get_args(), 1, 3));
+    }
+
+    /**
+     * Use eager loading to reduce the number of queries on the table view.
+     *
+     * @param  [type]
+     * @param  string
+     *
+     * @return [type]
+     */
+    public function with($entities)
+    {
+        return $this->query->with($entities);
     }
 
     /**

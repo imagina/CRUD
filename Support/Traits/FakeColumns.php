@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Bcrud\Support\Traits;
+namespace Modules\BCrud\Support\Traits;
 
 trait FakeColumns
 {
@@ -13,15 +13,7 @@ trait FakeColumns
         $fake_field_columns_to_encode = [];
 
         // get the right fields according to the form type (create/update)
-        switch (strtolower($form)) {
-            case 'update':
-                $fields = $this->update_fields;
-                break;
-
-            default:
-                $fields = $this->create_fields;
-                break;
-        }
+        $fields = $this->getFields($form);
 
         foreach ($fields as $k => $field) {
             // if it's a fake field

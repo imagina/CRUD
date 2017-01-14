@@ -2,8 +2,8 @@
 
 namespace Modules\Bcrud\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Route;
+use Illuminate\Support\ServiceProvider;
 
 class BcrudServiceProvider extends ServiceProvider
 {
@@ -15,25 +15,59 @@ class BcrudServiceProvider extends ServiceProvider
     protected $defer = false;
 
     /**
-     * Boot the application events.
+     * Perform post-registration booting of services.
      *
      * @return void
      */
     public function boot()
     {
+
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
+
+        // LOAD THE VIEWS
+
+        // - first the published/overwritten views (in case they have any changes)
+        //$this->loadViewsFrom(resource_path('views/vendor/backpack/crud'), 'crud');
+        // - then the stock views that come with the package, in case a published view might be missing
+        //$this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'crud');
+
+        //$this->loadTranslationsFrom(realpath(__DIR__.'/resources/lang'), 'backpack');
+
+        // PUBLISH FILES
+
+        // publish lang files
+        //$this->publishes([__DIR__.'/resources/lang' => resource_path('lang/vendor/backpack')], 'lang');
+
+        // publish views
+        //$this->publishes([__DIR__.'/resources/views' => resource_path('views/vendor/backpack/crud')], 'views');
+
+        // publish config file
+        //$this->publishes([__DIR__.'/config' => config_path()], 'config');
+
+        // publish public Backpack CRUD assets
+        //$this->publishes([__DIR__.'/public' => public_path('vendor/backpack')], 'public');
+
+        // publish custom files for elFinder
+        /*$this->publishes([
+            __DIR__.'/config/elfinder.php'      => config_path('elfinder.php'),
+            __DIR__.'/resources/views-elfinder' => resource_path('views/vendor/elfinder'),
+        ], 'elfinder');
+
+        // use the vendor configuration file as fallback
+        $this->mergeConfigFrom(
+            __DIR__.'/config/backpack/crud.php', 'backpack.crud'
+        );*/
     }
 
     /**
-     * Register the service provider.
+     * Register any package services.
      *
      * @return void
      */
     public function register()
     {
-
         $this->app->bind('CRUD', function ($app) {
             return new CRUD($app);
         });
@@ -51,10 +85,11 @@ class BcrudServiceProvider extends ServiceProvider
         $loader->alias('Html', \Collective\Html\HtmlFacade::class);
         $loader->alias('Image', \Intervention\Image\Facades\Image::class);
 
-
-        //
+        // map the elfinder prefix
+        /*if (!\Config::get('elfinder.route.prefix')) {
+            \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix') . '/elfinder');
+        }*/
     }
-
     /**
      * Register config.
      *
@@ -121,8 +156,6 @@ class BcrudServiceProvider extends ServiceProvider
 
     public static function resource($module,$name, $controller, array $options = [])
     {
-
-
         // CRUD routes
         Route::post($name.'/search', [
             'as' => 'crud.'.$module.'.'.$name.'.search',

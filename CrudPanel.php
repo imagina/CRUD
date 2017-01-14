@@ -1,26 +1,27 @@
 <?php
 
-namespace Modules\Bcrud;
+namespace Modules\BCrud;
 
-use Modules\Bcrud\Support\Traits\Access;
-use Modules\Bcrud\Support\Traits\AutoSet;
-use Modules\Bcrud\Support\Traits\Buttons;
-use Modules\Bcrud\Support\Traits\Columns;
-use Modules\Bcrud\Support\Traits\Create;
-use Modules\Bcrud\Support\Traits\Delete;
-use Modules\Bcrud\Support\Traits\FakeColumns;
-use Modules\Bcrud\Support\Traits\FakeFields;
-use Modules\Bcrud\Support\Traits\Fields;
-use Modules\Bcrud\Support\Traits\Query;
-use Modules\Bcrud\Support\Traits\Read;
-use Modules\Bcrud\Support\Traits\Reorder;
-use Modules\Bcrud\Support\Traits\Update;
-use Modules\Bcrud\Support\Traits\ViewsAndRestoresRevisions;
-use Modules\Bcrud\Support\Traits\AutoFocus;
+use Modules\BCrud\Support\Traits\Read;
+use Modules\BCrud\Support\Traits\Query;
+use Modules\BCrud\Support\Traits\Access;
+use Modules\BCrud\Support\Traits\Create;
+use Modules\BCrud\Support\Traits\Delete;
+use Modules\BCrud\Support\Traits\Fields;
+use Modules\BCrud\Support\Traits\Update;
+use Modules\BCrud\Support\Traits\AutoSet;
+use Modules\BCrud\Support\Traits\Buttons;
+use Modules\BCrud\Support\Traits\Columns;
+use Modules\BCrud\Support\Traits\Filters;
+use Modules\BCrud\Support\Traits\Reorder;
+use Modules\BCrud\Support\Traits\AutoFocus;
+use Modules\BCrud\Support\Traits\FakeFields;
+use Modules\BCrud\Support\Traits\FakeColumns;
+use Modules\BCrud\Support\Traits\ViewsAndRestoresRevisions;
 
 class CrudPanel
 {
-    use Create, Read, Update, Delete, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus;
+    use Create, Read, Update, Delete, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters;
 
     // --------------
     // CRUD variables
@@ -35,6 +36,7 @@ class CrudPanel
     public $route; // what route have you defined for your entity? used for links.
     public $entity_name = 'entry'; // what name will show up on the buttons, in singural (ex: Add entity)
     public $entity_name_plural = 'entries'; // what name will show up on the buttons, in plural (ex: Delete 5 entities)
+    public $request;
 
     public $access = ['list', 'create', 'update', 'delete'/* 'revisions', reorder', 'show', 'details_row' */];
 

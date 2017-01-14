@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Bcrud\Support\Traits;
+namespace Modules\BCrud\Support\Traits;
 
 trait Create
 {
@@ -19,8 +19,12 @@ trait Create
      */
     public function create($data)
     {
-        $values_to_store = $this->compactFakeFields($data, 'create');
-        $item = $this->model->create($values_to_store);
+        $data = $this->decodeJsonCastedAttributes($data, 'create');
+        $data = $this->compactFakeFields($data, 'create');
+
+        // ommit the n-n relationships when updating the eloquent item
+        $nn_relationships = array_pluck($this->getRelationFieldsWithPivot('update'), 'name');
+        $item = $this->model->create(array_except($data, $nn_relationships));
 
         // if there are any relationships available, also sync those
         $this->syncPivot($item, $data);
@@ -70,6 +74,22 @@ trait Create
         }
 
         return $relationFields;
+    }
+
+    /**
+     * Get all fields with n-n relation set (pivot table is true).
+     *
+     * @param [string: create/update/both]
+     *
+     * @return [array] The fields with n-n relationships.
+     */
+    public function getRelationFieldsWithPivot($form = 'create')
+    {
+        $all_relation_fields = $this->getRelationFields($form);
+
+        return array_where($all_relation_fields, function ($value, $key) {
+            return isset($value['pivot']) && $value['pivot'];
+        });
     }
 
     public function syncPivot($model, $data, $form = 'create')

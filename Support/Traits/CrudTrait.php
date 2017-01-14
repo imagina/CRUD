@@ -3,8 +3,8 @@
 namespace Modules\Bcrud\Support\Traits;
 
 use DB;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 
 trait CrudTrait
 {
@@ -17,7 +17,7 @@ trait CrudTrait
     public static function getPossibleEnumValues($field_name)
     {
         $instance = new static(); // create an instance of the model to be able to get the table name
-        $type = DB::select(DB::raw('SHOW COLUMNS FROM '.Config::get('database.connections.'.env('DB_CONNECTION').'.prefix').$instance->getTable().' WHERE Field = "'.$field_name.'"'))[0]->Type;
+        $type = DB::select(DB::raw('SHOW COLUMNS FROM `'.Config::get('database.connections.'.env('DB_CONNECTION').'.prefix').$instance->getTable().'` WHERE Field = "'.$field_name.'"'))[0]->Type;
         preg_match('/^enum\((.*)\)$/', $type, $matches);
         $enum = [];
         foreach (explode(',', $matches[1]) as $value) {
@@ -25,6 +25,20 @@ trait CrudTrait
         }
 
         return $enum;
+    }
+
+    public static function getEnumValuesAsAssociativeArray($field_name)
+    {
+        $instance = new static();
+        $enum_values = $instance->getPossibleEnumValues($field_name);
+
+        $array = array_flip($enum_values);
+
+        foreach ($array as $key => $value) {
+            $array[$key] = $key;
+        }
+
+        return $array;
     }
 
     public static function isColumnNullable($column_name)
@@ -66,12 +80,11 @@ trait CrudTrait
                         $this->setAttribute($fake_field_name, $fake_field_value);
                     } elseif(is_array($fake_field_value)) {
                         $this->setAttribute($fake_field_name, implode(',',array_filter($fake_field_value, function($item) {
-                           if(is_string($item)) return true;
+                            if(is_string($item)) return true;
                         })));
                     } else {
                         $this->setAttribute($fake_field_name,'');
                     }
-
                 }
             }
         }
@@ -201,5 +214,38 @@ trait CrudTrait
         }
 
         $this->attributes[$attribute_name] = json_encode($attribute_value);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods for working with translatable models.
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get the attributes that were casted in the model.
+     * Used for translations because Spatie/Laravel-Translatable
+     * overwrites the getCasts() method.
+     *
+     * @return [type] [description]
+     */
+    public function getCastedAttributes() : array
+    {
+        return parent::getCasts();
+    }
+
+    /**
+     * Check if a model is translatable.
+     * All translation adaptors must have the translationEnabledForModel() method.
+     *
+     * @return bool
+     */
+    public function translationEnabled()
+    {
+        if (method_exists($this, 'translationEnabledForModel')) {
+            return $this->translationEnabledForModel();
+        }
+
+        return false;
     }
 }

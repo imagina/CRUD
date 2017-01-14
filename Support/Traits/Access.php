@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Bcrud\Support\Traits;
+namespace Modules\BCrud\Support\Traits;
 
 trait Access
 {
