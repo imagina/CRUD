@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\BCrud\Support\ModelTraits\Translatable;
+namespace Modules\Bcrud\Support\ModelTraits\Translatable;
 
 use Spatie\Translatable\HasTranslations;
 

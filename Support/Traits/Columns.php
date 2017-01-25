@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\BCrud\Support\Traits;
+namespace Modules\Bcrud\Support\Traits;
 
 trait Columns
 {

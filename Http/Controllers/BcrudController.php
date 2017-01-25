@@ -2,19 +2,19 @@
 
 namespace Modules\Bcrud\Http\Controllers;
 
-use Modules\BCrud\CrudPanel;
+use Modules\Bcrud\CrudPanel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Form as Form;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Modules\BCrud\Http\Controllers\CrudFeatures\Reorder;
-use Modules\BCrud\Http\Controllers\CrudFeatures\AjaxTable;
+use Modules\Bcrud\Http\Controllers\CrudFeatures\Reorder;
+use Modules\Bcrud\Http\Controllers\CrudFeatures\AjaxTable;
 // CRUD Traits for non-core features
-use Modules\BCrud\Http\Controllers\CrudFeatures\Revisions;
-use Modules\BCrud\Http\Requests\CrudRequest as StoreRequest;
-use Modules\BCrud\Http\Requests\CrudRequest as UpdateRequest;
-use Modules\BCrud\Http\Controllers\CrudFeatures\ShowDetailsRow;
+use Modules\Bcrud\Http\Controllers\CrudFeatures\Revisions;
+use Modules\Bcrud\Http\Requests\CrudRequest as StoreRequest;
+use Modules\Bcrud\Http\Requests\CrudRequest as UpdateRequest;
+use Modules\Bcrud\Http\Controllers\CrudFeatures\ShowDetailsRow;
 
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use LiveControl\EloquentDataTable\DataTable;
