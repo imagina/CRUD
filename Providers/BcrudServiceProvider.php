@@ -4,9 +4,12 @@ namespace Modules\Bcrud\Providers;
 
 use Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Traits\CanPublishConfiguration;
 
 class BcrudServiceProvider extends ServiceProvider
 {
+
+    use CanPublishConfiguration;
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -23,7 +26,14 @@ class BcrudServiceProvider extends ServiceProvider
     {
 
         $this->registerTranslations();
+
         $this->registerConfig();
+
+        $this->publishConfig('bcrud', 'permissions');
+        $this->publishConfig('bcrud', 'config');
+        $this->publishConfig('bcrud', 'backpack/base');
+        $this->publishConfig('bcrud', 'backpack/crud');
+
         $this->registerViews();
 
         // LOAD THE VIEWS
@@ -60,6 +70,24 @@ class BcrudServiceProvider extends ServiceProvider
             __DIR__.'/config/backpack/crud.php', 'backpack.crud'
         );*/
     }
+
+    /**
+     * Publish the given configuration file name (without extension) and the given module
+     * @param string $module
+     * @param string $fileName
+     */
+    public function publishConfig($module, $fileName)
+    {
+        if (app()->environment() === 'testing') {
+            return;
+        }
+
+        $this->mergeConfigFrom($this->getModuleConfigFilePath($module, $fileName), strtolower("$module.$fileName"));
+        $this->publishes([
+            $this->getModuleConfigFilePath($module, $fileName) => config_path(strtolower("$module/$fileName") . '.php'),
+        ], 'config');
+    }
+
 
     /**
      * Register any package services.
