@@ -15,7 +15,7 @@ return [
 
     // Create form
     'add'                 => 'Añadir',
-    'back_to_all'         => 'Volver al listado ',
+    'back_to_all'         => 'Volver al listado de',
     'cancel'              => 'Cancelar',
     'add_a_new'           => 'Añadir nuevo ',
 
@@ -41,7 +41,7 @@ return [
     'revision_restored'    => 'Revisión restaurado correctamente',
 
     // CRUD table view
-    'all'                       => 'Todos ',
+    'all'                       => '',
     'in_the_database'           => 'en la base de datos',
     'list'                      => 'Listar',
     'actions'                   => 'Acciones',

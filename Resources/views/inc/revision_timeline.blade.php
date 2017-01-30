@@ -41,7 +41,7 @@
 @section('scripts')
   <script type="text/javascript">
     $.ajaxPrefilter(function(options, originalOptions, xhr) {
-        var token = $('meta[('meta[name="token"]').attr('value');
+        var token = $('meta[name="token"]').attr('value');
 
         if (token) {
               return xhr.setRequestHeader('X-CSRF-TOKEN', token);
