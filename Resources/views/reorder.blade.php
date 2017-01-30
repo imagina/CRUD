@@ -100,6 +100,14 @@
   <script type="text/javascript">
     jQuery(document).ready(function($) {
 
+        $.ajaxPrefilter(function(options, originalOptions, xhr) {
+            var token = $('meta[name="token"]').attr('value');
+
+            if (token) {
+                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+            }
+        });
+
       // initialize the nested sortable plugin
       $('.sortable').nestedSortable({
             forcePlaceholderSize: true,
@@ -158,13 +166,7 @@
 
       });
 
-      $.ajaxPrefilter(function(options, originalOptions, xhr) {
-          var token = $('meta[name="token"]').attr('value');
 
-          if (token) {
-                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-          }
-      });
 
     });
   </script>

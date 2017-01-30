@@ -155,6 +155,14 @@
 	<script type="text/javascript">
 	  jQuery(document).ready(function($) {
 
+      $.ajaxPrefilter(function(options, originalOptions, xhr) {
+          var token = $('meta[name="token"]').attr('value');
+
+          if (token) {
+              return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+          }
+      });
+
       @if ($crud->exportButtons())
       var dtButtons = function(buttons){
           var extended = [];
@@ -238,13 +246,7 @@
       $(".dt-buttons").appendTo($('#datatable_button_stack' ));
       @endif
 
-      $.ajaxPrefilter(function(options, originalOptions, xhr) {
-          var token = $('meta[name="token"]').attr('value');
 
-          if (token) {
-                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-          }
-      });
 
       // make the delete button work in the first result page
       register_delete_button_action();
