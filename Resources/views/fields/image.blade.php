@@ -6,7 +6,7 @@
     <!-- Wrap the image or canvas element with a block element (container) -->
     <div class="row">
         <div class="col-sm-6" style="margin-bottom: 20px;">
-            <img id="mainImage" src="{{ url(old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '') )) }}">
+            <img id="mainImage" src="{{ url(old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '') )) }}?v={{bin2hex(random_bytes(5))}}">
         </div>
         @if(isset($field['crop']) && $field['crop'])
         <div class="col-sm-3">
@@ -130,7 +130,8 @@
                         $remove.hide();
                     }
                     // Initialise hidden form input in case we submit with no change
-                    $hiddenImage.val($mainImage.attr('src'));
+                    $urlimg=$mainImage.attr('src').split('?')
+                    $hiddenImage.val($urlimg[0]);
 
 
                     // Only initialize cropper plugin if crop is set to true
