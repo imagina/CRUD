@@ -11,7 +11,7 @@
     ],
 	
 	"require": {
-        "php": ">=5.5",
+        "php": ">=7.0.0",
         "composer/installers": "~1.0",
         "livecontrol/eloquent-datatable": "^0.1.5"
     },
@@ -24,7 +24,7 @@
 
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }
