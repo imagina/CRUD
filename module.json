@@ -3,6 +3,8 @@
     "alias": "bcrud",
     "description": "",
 
+    "version": "2.0.0",
+
     "keywords": [
         "crud",
         "asgardcms"

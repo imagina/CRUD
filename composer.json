@@ -20,5 +20,11 @@
         "psr-4": {
             "Modules\\Bcrud\\": ""
         }
+    },
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
     }
 }
