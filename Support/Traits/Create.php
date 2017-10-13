@@ -23,7 +23,7 @@ trait Create
         $data = $this->compactFakeFields($data, 'create');
 
         // ommit the n-n relationships when updating the eloquent item
-        $nn_relationships = array_pluck($this->getRelationFieldsWithPivot('update'), 'name');
+        $nn_relationships = array_pluck($this->getRelationFieldsWithPivot('create'), 'name');
         $item = $this->model->create(array_except($data, $nn_relationships));
 
         // if there are any relationships available, also sync those
@@ -103,7 +103,7 @@ trait Create
 
                 if (isset($field['pivotFields'])) {
                     foreach ($field['pivotFields'] as $pivotField) {
-                        foreach ($data[$pivotField] as $pivot_id =>  $field) {
+                        foreach ($data[$pivotField] as $pivot_id => $field) {
                             $model->{$field['name']}()->updateExistingPivot($pivot_id, [$pivotField => $field]);
                         }
                     }

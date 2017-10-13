@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Dick Crud Language Lines
+    | Backpack Crud Language Lines
     |--------------------------------------------------------------------------
     |
     | The following language lines are used by the CRUD interface.
@@ -13,17 +13,17 @@ return [
     |
     */
 
+    // Forms
+    'save_action_save_and_new' => 'Enregistrer et créer un nouveau',
+    'save_action_save_and_edit' => 'Enregistrer et éditer',
+    'save_action_save_and_back' => 'Enregistrer et retour',
+    'save_action_changed_notification' => 'Action par defaut changée',
+
     // Create form
     'add'                 => 'Ajouter',
     'back_to_all'         => 'Retour à la liste ',
     'cancel'              => 'Annuler',
     'add_a_new'           => 'Ajouter un nouvel élément ',
-
-        // Create form - advanced options
-        'after_saving'            => 'Après enregistrement',
-        'go_to_the_table_view'    => 'retourner à la liste',
-        'let_me_add_another_item' => 'ajouter un autre élément',
-        'edit_the_new_item'       => 'modifier l’élément ajouté',
 
     // Edit form
     'edit'                 => 'Modifier',
@@ -42,7 +42,7 @@ return [
 
     // CRUD table view
     'all'                       => 'Tous les ',
-    'in_the_database'           => 'en base de donnée',
+    'in_the_database'           => 'en base de données',
     'list'                      => 'Liste',
     'actions'                   => 'Actions',
     'preview'                   => 'Aperçu',
@@ -84,29 +84,33 @@ return [
         ],
 
     // global crud - errors
-    'unauthorized_access' => 'Accès non autorisé - vous n’avez pas les droits nécessaires à la consultation de cette page.',
-    'please_fix' => 'Veuillez corriger les erreurs suivantes:',
+        'unauthorized_access' => 'Accès non autorisé - vous n’avez pas les droits nécessaires à la consultation de cette page.',
+        'please_fix' => 'Veuillez corriger les erreurs suivantes:',
 
     // global crud - success / error notification bubbles
-    'insert_success' => 'L’élément a été ajouté avec succès.',
-    'update_success' => 'L’élément a été modifié avec succès.',
+        'insert_success' => 'L’élément a été ajouté avec succès.',
+        'update_success' => 'L’élément a été modifié avec succès.',
 
     // CRUD reorder view
-    'reorder'                      => 'Réordonner',
-    'reorder_text'                 => 'Utilisez le glisser-déposer pour réordonner.',
-    'reorder_success_title'        => 'Fait',
-    'reorder_success_message'      => 'L’ordre a été enregistré.',
-    'reorder_error_title'          => 'Erreur',
-    'reorder_error_message'        => 'L’ordre n’a pas pu être enregistré.',
+        'reorder'                      => 'Réordonner',
+        'reorder_text'                 => 'Utilisez le glisser-déposer pour réordonner.',
+        'reorder_success_title'        => 'Fait',
+        'reorder_success_message'      => 'L’ordre a été enregistré.',
+        'reorder_error_title'          => 'Erreur',
+        'reorder_error_message'        => 'L’ordre n’a pas pu être enregistré.',
+
+    // CRUD yes/no
+        'yes' => 'Oui',
+        'no' => 'Non',
 
     // Fields
-    'browse_uploads' => 'Parcourir les fichier chargés',
-    'clear' => 'Effacer',
-    'page_link' => 'Lien de la page',
-    'page_link_placeholder' => 'http://example.com/votre-page',
-    'internal_link' => 'Lien interne',
-    'internal_link_placeholder' => 'Identifiant de lien interne. Ex: \'admin/page\' (sans guillemets) pour \':url\'',
-    'external_link' => 'Lien externe',
-    'choose_file' => 'Choisissez un fichier',
+        'browse_uploads' => 'Parcourir les fichier chargés',
+        'clear' => 'Effacer',
+        'page_link' => 'Lien de la page',
+        'page_link_placeholder' => 'http://example.com/votre-page',
+        'internal_link' => 'Lien interne',
+        'internal_link_placeholder' => 'Identifiant de lien interne. Ex: \'admin/page\' (sans guillemets) pour \':url\'',
+        'external_link' => 'Lien externe',
+        'choose_file' => 'Choisissez un fichier',
 
 ];

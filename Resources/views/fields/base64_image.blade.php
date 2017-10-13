@@ -6,7 +6,7 @@
     <!-- Wrap the image or canvas element with a block element (container) -->
     <div class="row">
         <div class="col-sm-6" style="margin-bottom: 20px;">
-            <img id="mainImage" src="{{ isset($field['src']) ? $entry->where('id', $entry->id)->first()->{$field['src']}() : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}">
+            <img id="mainImage" src="{{ isset($field['src']) ? $entry->find($entry->id)->{$field['src']}() : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}">
         </div>
         @if(isset($field['crop']) && $field['crop'])
         <div class="col-sm-3">
@@ -54,7 +54,7 @@
             .hide {
                 display: none;
             }
-            .btn-group {
+            .image .btn-group {
                 margin-top: 10px;
             }
             img {
@@ -184,7 +184,7 @@
                                     $mainImage.cropper(options).cropper("reset", true).cropper("replace", this.result);
                                     // Override form submit to copy canvas to hidden input before submitting
                                     $('form').submit(function() {
-                                        var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL();
+                                        var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL(file.type);
                                         $hiddenImage.val(imageURL);
                                         return true; // return false to cancel form action
                                     });

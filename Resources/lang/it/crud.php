@@ -1,10 +1,11 @@
 <?php
 
+
 return [
 
     /*
     |--------------------------------------------------------------------------
-    | Dick Crud Language Lines
+    | Backpack Crud Language Lines
     |--------------------------------------------------------------------------
     |
     | The following language lines are used by the CRUD interface.
@@ -13,17 +14,17 @@ return [
     |
     */
 
+    // Forms
+    'save_action_save_and_new' => 'Salva ed aggiungi un nuovo elemento',
+    'save_action_save_and_edit' => 'Salva e modifica questo elemento',
+    'save_action_save_and_back' => 'Salva e torna indietro',
+    'save_action_changed_notification' => 'Azione predefinita cambiata',
+
     // Create form
     'add'                 => 'Aggiungi',
     'back_to_all'         => 'Torna a tutti i ',
     'cancel'              => 'Annulla',
     'add_a_new'           => 'Aggiungi un nuovo ',
-
-        // Create form - advanced options
-        'after_saving'            => 'Dopo il salvataggio',
-        'go_to_the_table_view'    => 'vai alla lista di tutti gli elementi',
-        'let_me_add_another_item' => 'aggiungi un altro elemento',
-        'edit_the_new_item'       => 'modifica il nuovo elemento',
 
     // Edit form
     'edit'                 => 'Modifica',
@@ -39,6 +40,11 @@ return [
     'to'                   => 'a',
     'undo'                 => 'Disfare',
     'revision_restored'    => 'Revisione successo restaurato',
+    'guest_user'           => 'Utente Ospite',
+
+    // Translatable models
+    'edit_translations' => 'MODIFICA TRADUZIONI',
+    'language'          => 'Lingua',
 
     // CRUD table view
     'all'                       => 'Tutti i ',
@@ -51,37 +57,42 @@ return [
     'details_row'               => 'Questa è la riga dei dettagli. Modificala a tuo piacimento.',
     'details_row_loading_error' => "C'è stato un errore caricando i dettagli. Riprova.",
 
-        // Confirmation messages and bubbles
-        'delete_confirm'                              => 'Sei sicuro di eliminare questo elemento?',
-        'delete_confirmation_title'                   => 'Elemento eliminato',
-        'delete_confirmation_message'                 => "L'elemento è stato eliminato con successo.",
-        'delete_confirmation_not_title'               => 'NON eliminato',
-        'delete_confirmation_not_message'             => "C'è stato un errore. L'elemento potrebbe non essere stato eliminato.",
-        'delete_confirmation_not_deleted_title'       => 'Non eliminato',
-        'delete_confirmation_not_deleted_message'     => "Non è successo niente. L'elemento è al sicuro.",
+    // Confirmation messages and bubbles
+    'delete_confirm'                              => 'Sei sicuro di eliminare questo elemento?',
+    'delete_confirmation_title'                   => 'Elemento eliminato',
+    'delete_confirmation_message'                 => "L'elemento è stato eliminato con successo.",
+    'delete_confirmation_not_title'               => 'NON eliminato',
+    'delete_confirmation_not_message'             => "C'è stato un errore. L'elemento potrebbe non essere stato eliminato.",
+    'delete_confirmation_not_deleted_title'       => 'Non eliminato',
+    'delete_confirmation_not_deleted_message'     => "Non è successo niente. L'elemento è al sicuro.",
 
-        // DataTables translation
-        'emptyTable'     => 'Nessun record da visualizzare',
-        'info'           => 'Visualizzando da _START_ a _END_ record di _TOTAL_',
-        'infoEmpty'      => 'Visualizzando da 0 a 0 record di 0',
-        'infoFiltered'   => '(filtrati da _MAX_ record totali)',
-        'infoPostFix'    => '',
-        'thousands'      => ',',
-        'lengthMenu'     => '_MENU_ record per pagina',
-        'loadingRecords' => 'Caricamento...',
-        'processing'     => 'Elaborazione...',
-        'search'         => 'Cerca: ',
-        'zeroRecords'    => 'Nessun record corrispondente',
-        'paginate'       => [
-            'first'    => 'Primo',
-            'last'     => 'Ultimo',
-            'next'     => 'Prossimo',
-            'previous' => 'Precedente',
-        ],
-        'aria' => [
-            'sortAscending'  => ': attiva per ordinare la colonna ascendentemente',
-            'sortDescending' => ': attiva per ordinare la colonna discendentemente',
-        ],
+    // DataTables translation
+    'emptyTable'     => 'Nessun record da visualizzare',
+    'info'           => 'Visualizzando da _START_ a _END_ record di _TOTAL_',
+    'infoEmpty'      => 'Visualizzando da 0 a 0 record di 0',
+    'infoFiltered'   => '(filtrati da _MAX_ record totali)',
+    'infoPostFix'    => '',
+    'thousands'      => ',',
+    'lengthMenu'     => '_MENU_ record per pagina',
+    'loadingRecords' => 'Caricamento...',
+    'processing'     => 'Elaborazione...',
+    'search'         => 'Cerca: ',
+    'zeroRecords'    => 'Nessun record corrispondente',
+    'paginate'       => [
+    'first'    => 'Primo',
+    'last'     => 'Ultimo',
+    'next'     => 'Prossimo',
+    'previous' => 'Precedente',
+],
+    'aria' => [
+    'sortAscending'  => ': attiva per ordinare la colonna ascendentemente',
+    'sortDescending' => ': attiva per ordinare la colonna discendentemente',
+],
+    'export' => [
+    'copy'              => 'Copia',
+    'print'             => 'Stampa',
+    'column_visibility' => 'Visibilità colonne',
+],
 
     // global crud - errors
     'unauthorized_access' => 'Accesso non autorizzato - non hai i permessi necessari per vedere questa pagina.',
@@ -99,6 +110,15 @@ return [
     'reorder_error_title'          => 'Errore',
     'reorder_error_message'        => 'Il tuo ordinamento non è stato salvato.',
 
+    // CRUD yes/no
+    'yes' => 'Sì',
+    'no' => 'No',
+
+    // CRUD filters navbar view
+    'filters' => 'Filtri',
+    'toggle_filters' => 'Attiva/disattiva filtri',
+    'remove_filters' => 'Rimuovi filtri',
+
     // Fields
     'browse_uploads' => 'Sfoglia file caricati',
     'clear' => 'Pulisci',
@@ -107,5 +127,9 @@ return [
     'internal_link' => 'Link Interno',
     'internal_link_placeholder' => 'Slug interno. Es: \'admin/page\' (no quotes) for \':url\'',
     'external_link' => 'Link Esterno',
+    'choose_file' => 'Scegli file',
 
+    //Table field
+    'table_cant_add' => 'Impossibile aggiungere una nuova :entity',
+    'table_max_reached' => 'Numero massimo di :max raggiunto',
 ];

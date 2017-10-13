@@ -3,18 +3,16 @@
 <?php
     $max = isset($field['max']) && (int) $field['max'] > 0 ? $field['max'] : -1;
     $min = isset($field['min']) && (int) $field['min'] > 0 ? $field['min'] : -1;
-    $item_name = strtolower( isset($field['entity_singular']) && !empty($field['entity_singular']) ? $field['entity_singular'] : $field['label']);
+    $item_name = strtolower(isset($field['entity_singular']) && !empty($field['entity_singular']) ? $field['entity_singular'] : $field['label']);
 
     $items = old($field['name']) ? (old($field['name'])) : (isset($field['value']) ? ($field['value']) : (isset($field['default']) ? ($field['default']) : '' ));
 
     // make sure not matter the attribute casting
     // the $items variable contains a properly defined JSON
-    if(is_array($items)) {
+    if (is_array($items)) {
         if (count($items)) {
             $items = json_encode($items);
-        }
-        else
-        {
+        } else {
             $items = '[]';
         }
     } elseif (is_string($items) && !is_array(json_decode($items))) {
@@ -31,7 +29,7 @@
 
     <div class="array-container form-group">
 
-        <table class="table table-bordered table-striped m-b-0" ng-init="field = '#{{ $field['name'] }}'; items = {{ $items }}; max = {{$max}}; min = {{$min}}; maxErrorTitle = '{{trans('bcrud::crud.table_cant_add', ['entity' => $item_name])}}'; maxErrorMessage = '{{trans('bcrud::crud.table_max_reached', ['max' => $max])}}'">
+        <table class="table table-bordered table-striped m-b-0" ng-init="field = '#{{ $field['name'] }}'; items = {{ $items }}; max = {{$max}}; min = {{$min}}; maxErrorTitle = '{{trans('bcrud::crud.table_cant_add', ['entity' => $item_name])}}'; maxErrorMessage = '{{trans('backpack::crud.table_max_reached', ['max' => $max])}}'">
 
             <thead>
                 <tr>
@@ -68,7 +66,7 @@
         </table>
 
         <div class="array-controls btn-group m-t-10">
-            <button ng-if="max == -1 || items.length < max" class="btn btn-sm btn-default" type="button" ng-click="addItem()"><i class="fa fa-plus"></i> Add {{ $item_name }}</button>
+            <button ng-if="max == -1 || items.length < max" class="btn btn-sm btn-default" type="button" ng-click="addItem()"><i class="fa fa-plus"></i> {{trans('bcrud::crud.add')}} {{ $item_name }}</button>
         </div>
 
     </div>
@@ -142,13 +140,13 @@
                         }
                     }
 
-                    if( typeof $scope.items != 'undefined' && $scope.items.length ){
+                    if( typeof $scope.items != 'undefined' ){
 
                         if( typeof $scope.field != 'undefined'){
                             if( typeof $scope.field == 'string' ){
                                 $scope.field = $($scope.field);
                             }
-                            $scope.field.val( angular.toJson($scope.items) );
+                            $scope.field.val( $scope.items.length ? angular.toJson($scope.items) : null );
                         }
                     }
                 }, true);

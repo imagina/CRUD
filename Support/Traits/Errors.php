@@ -1,0 +1,57 @@
+<?php
+
+namespace Modules\Bcrud\Support\Traits;
+
+trait Errors
+{
+    protected $groupedErrors = true;
+    protected $inlineErrors = false;
+
+    public function setErrorDefaults()
+    {
+        $this->groupedErrors = config('bcrud.backpack.crud.show_grouped_errors', true);
+        $this->inlineErrors = config('bcrud.backpack.crud.show_inline_errors', false);
+    }
+
+    // Getters
+
+    public function groupedErrorsEnabled()
+    {
+        return $this->groupedErrors;
+    }
+
+    public function inlineErrorsEnabled()
+    {
+        return $this->inlineErrors;
+    }
+
+    // Setters
+
+    public function enableGroupedErrors()
+    {
+        $this->groupedErrors = true;
+
+        return $this->groupedErrors;
+    }
+
+    public function disableGroupedErrors()
+    {
+        $this->groupedErrors = false;
+
+        return $this->groupedErrors;
+    }
+
+    public function enableInlineErrors()
+    {
+        $this->inlineErrors = true;
+
+        return $this->inlineErrors;
+    }
+
+    public function disableInlineErrors()
+    {
+        $this->inlineErrors = false;
+
+        return $this->inlineErrors;
+    }
+}

@@ -12,9 +12,9 @@
     <div class="timeline-item">
       <span class="time"><i class="fa fa-clock-o"></i> {{ date('h:ia', strtotime($history->created_at)) }}</span>
       @if($history->key == 'created_at' && !$history->old_value)
-        <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ trans('bcrud::crud.created_this') }} {{ $crud->entity_name }}</h3>
+        <h3 class="timeline-header">{{ $history->userResponsible()?$history->userResponsible()->name:trans('bcrud::crud.guest_user') }} {{ trans('backpack::crud.created_this') }} {{ $crud->entity_name }}</h3>
       @else
-        <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ trans('bcrud::crud.changed_the') }} {{ $history->fieldName() }}</h3>
+        <h3 class="timeline-header">{{ $history->userResponsible()?$history->userResponsible()->name:trans('bcrud::crud.guest_user') }} {{ trans('backpack::crud.changed_the') }} {{ $history->fieldName() }}</h3>
         <div class="timeline-body p-b-0">
           <div class="row">
             <div class="col-md-6">{{ ucfirst(trans('bcrud::crud.from')) }}:</div>
@@ -41,7 +41,7 @@
 @section('scripts')
   <script type="text/javascript">
     $.ajaxPrefilter(function(options, originalOptions, xhr) {
-        var token = $('meta[name="token"]').attr('value');
+        var token = $('meta[('meta[name="token"]').attr('value');
 
         if (token) {
               return xhr.setRequestHeader('X-CSRF-TOKEN', token);

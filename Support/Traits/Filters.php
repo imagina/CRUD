@@ -2,17 +2,33 @@
 
 namespace Modules\Bcrud\Support\Traits;
 
-use Illuminate\Http\Request;
-
 trait Filters
 {
-    // ------------
-    // FILTERS
-    // ------------
-
     public $filters = [];
 
-    public function __construct()
+    public function filtersEnabled()
+    {
+        return ! is_array($this->filters);
+    }
+
+    public function filtersDisabled()
+    {
+        return is_array($this->filters);
+    }
+
+    public function enableFilters()
+    {
+        if ($this->filtersDisabled()) {
+            $this->filters = new FiltersCollection;
+        }
+    }
+
+    public function disableFilters()
+    {
+        $this->filters = [];
+    }
+
+    public function clearFilters()
     {
         $this->filters = new FiltersCollection;
     }
@@ -22,15 +38,19 @@ trait Filters
      *
      * @param array         $options        Name, type, label, etc.
      * @param array/closure $values         The HTML for the filter.
-     * @param closure       $filter_logic   Query modification (filtering) logic.
+     * @param closure       $filter_logic   Query modification (filtering) logic when filter is active.
+     * @param closure       $fallback_logic  Query modification (filtering) logic when filter is not active.
      */
-    public function addFilter($options, $values = false, $filter_logic = false)
+    public function addFilter($options, $values = false, $filter_logic = false, $fallback_logic = false)
     {
         // if a closure was passed as "values"
         if (is_callable($values)) {
             // get its results
             $values = $values();
         }
+
+        // enable the filters functionality
+        $this->enableFilters();
 
         // check if another filter with the same name exists
         if (! isset($options['name'])) {
@@ -45,13 +65,20 @@ trait Filters
         $this->filters->push($filter);
 
         // if a closure was passed as "filter_logic"
-        if ($this->doingListOperation() &&
-            $this->request->has($options['name'])) {
-            if (is_callable($filter_logic)) {
-                // apply it
-                $filter_logic($this->request->input($options['name']));
+        if ($this->doingListOperation()) {
+            if ($this->request->has($options['name'])) {
+                if (is_callable($filter_logic)) {
+                    // apply it
+                    $filter_logic($this->request->input($options['name']));
+                } else {
+                    $this->addDefaultFilterLogic($filter->name, $filter_logic);
+                }
             } else {
-                $this->addDefaultFilterLogic($filter->name, $filter_logic);
+                //if the filter is not active, but fallback logic was supplied
+                if (is_callable($fallback_logic)) {
+                    // apply the fallback logic
+                    $fallback_logic();
+                }
             }
         }
     }

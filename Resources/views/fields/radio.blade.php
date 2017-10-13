@@ -2,6 +2,11 @@
 @php
     $optionPointer = 0;
     $optionValue = old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' ));
+
+    // if the class isn't overwritten, use 'radio'
+    if (!isset($field['attributes']['class'])) {
+        $field['attributes']['class'] = 'radio';
+    }
 @endphp
 
 <div @include('bcrud::inc.field_wrapper_attributes') >
@@ -11,7 +16,7 @@
         @include('bcrud::inc.field_translatable_icon')
     </div>
 
-    @if( isset($field['options']) && is_array($field['options']) )
+    @if( isset($field['options']) && $field['options'] = (array)$field['options'] )
 
         @foreach ($field['options'] as $value => $label )
             @php ($optionPointer++)
@@ -19,7 +24,13 @@
             @if( isset($field['inline']) && $field['inline'] )
 
             <label class="radio-inline" for="{{$field['name']}}_{{$optionPointer}}">
-                <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}" value="{{$value}}" {{$optionValue == $value ? ' checked': ''}}> {!! $label !!}
+                <input  type="radio"
+                        id="{{$field['name']}}_{{$optionPointer}}"
+                        name="{{$field['name']}}"
+                        value="{{$value}}"
+                        @include('bcrud::inc.field_attributes')
+                        {{$optionValue == $value ? ' checked': ''}}
+                        > {!! $label !!}
             </label>
 
             @else

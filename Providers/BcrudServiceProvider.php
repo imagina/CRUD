@@ -43,8 +43,6 @@ class BcrudServiceProvider extends ServiceProvider
         // - then the stock views that come with the package, in case a published view might be missing
         //$this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'crud');
 
-        //$this->loadTranslationsFrom(realpath(__DIR__.'/resources/lang'), 'backpack');
-
         // PUBLISH FILES
 
         // publish lang files
@@ -65,13 +63,25 @@ class BcrudServiceProvider extends ServiceProvider
             __DIR__.'/resources/views-elfinder' => resource_path('views/vendor/elfinder'),
         ], 'elfinder');
 
+        // AUTO PUBLISH
+        if (\App::environment('local')) {
+            if ($this->shouldAutoPublishPublic()) {
+                \Artisan::call('vendor:publish', [
+                    '--provider' => 'Modules\Bcrud\CrudServiceProvider',
+                    '--tag' => 'public',
+                ]);
+            }
+		
+        }
+
         // use the vendor configuration file as fallback
         $this->mergeConfigFrom(
-            __DIR__.'/config/backpack/crud.php', 'backpack.crud'
+            __DIR__.'/config/backpack/crud.php',
+            'backpack.crud'
         );*/
     }
 
-    /**
+/**
      * Publish the given configuration file name (without extension) and the given module
      * @param string $module
      * @param string $fileName
@@ -87,7 +97,6 @@ class BcrudServiceProvider extends ServiceProvider
             $this->getModuleConfigFilePath($module, $fileName) => config_path(strtolower("$module/$fileName") . '.php'),
         ], 'config');
     }
-
 
     /**
      * Register any package services.
@@ -114,8 +123,8 @@ class BcrudServiceProvider extends ServiceProvider
         $loader->alias('Image', \Intervention\Image\Facades\Image::class);
 
         // map the elfinder prefix
-        /*if (!\Config::get('elfinder.route.prefix')) {
-            \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix') . '/elfinder');
+        /*if (! \Config::get('elfinder.route.prefix')) {
+            \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix').'/elfinder');
         }*/
     }
     /**
@@ -151,7 +160,7 @@ class BcrudServiceProvider extends ServiceProvider
 
     }
 
-    /**
+	/**
      * Register views.
      *
      * @return void
@@ -170,8 +179,7 @@ class BcrudServiceProvider extends ServiceProvider
             return $path . '/modules/bcrud';
         }, \Config::get('view.paths')), [$sourcePath]), 'bcrud');
     }
-
-    /**
+	/**
      * Register translations.
      *
      * @return void
@@ -187,7 +195,7 @@ class BcrudServiceProvider extends ServiceProvider
         }
     }
 
-    /**
+	/**
      * Get the services provided by the provider.
      *
      * @return array
@@ -198,52 +206,25 @@ class BcrudServiceProvider extends ServiceProvider
     }
 
 
-
-
-    public static function resource($module,$name, $controller, array $options = [])
+    public static function resource($name, $controller, array $options = [])
     {
-        // CRUD routes
-        Route::post($name.'/search', [
-            'as' => 'crud.'.$module.'.'.$name.'.search',
-            'uses' => $controller.'@search',
-        ]);
-        Route::get($name.'/reorder', [
-            'as' => 'crud.'.$module.'.'.$name.'.reorder',
-            'uses' => $controller.'@reorder',
-        ]);
-        Route::post($name.'/reorder', [
-            'as' => 'crud.'.$module.'.'.$name.'.save.reorder',
-            'uses' => $controller.'@saveReorder',
-        ]);
-        Route::get($name.'/{id}/details', [
-            'as' => 'crud.'.$module.'.'.$name.'.showDetailsRow',
-            'uses' => $controller.'@showDetailsRow',
-        ]);
-        Route::get($name.'/{id}/translate/{lang}', [
-            'as' => 'crud.'.$module.'.'.$name.'.translateItem',
-            'uses' => $controller.'@translateItem',
-        ]);
-        Route::get($name.'/{id}/revisions', [
-            'as' => 'crud.'.$module.'.'.$name.'.listRevisions',
-            'uses' => $controller.'@listRevisions',
-        ]);
-        Route::post($name.'/{id}/revisions/{revisionId}/restore', [
-            'as' => 'crud.'.$module.'.'.$name.'.restoreRevision',
-            'uses' => $controller.'@restoreRevision',
-        ]);
+        return new CrudRouter($name, $controller, $options);
+    }
 
-        $options_with_default_route_names = array_merge([
-            'names' => [
-                'index'     => 'crud.'.$module.'.'.$name.'.index',
-                'create'    => 'crud.'.$module.'.'.$name.'.create',
-                'store'     => 'crud.'.$module.'.'.$name.'.store',
-                'edit'      => 'crud.'.$module.'.'.$name.'.edit',
-                'update'    => 'crud.'.$module.'.'.$name.'.update',
-                'show'      => 'crud.'.$module.'.'.$name.'.show',
-                'destroy'   => 'crud.'.$module.'.'.$name.'.destroy',
-            ],
-        ], $options);
+    /**
+     * Checks to see if we should automatically publish
+     * vendor files from the public tag.
+     *
+     * @return bool
+     */
+    private function shouldAutoPublishPublic()
+    {
+        $crudPubPath = public_path('vendor/backpack/crud');
 
-        Route::resource($name, $controller, $options_with_default_route_names);
+        if (! is_dir($crudPubPath)) {
+            return true;
+        }
+
+        return false;
     }
 }

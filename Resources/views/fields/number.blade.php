@@ -1,6 +1,6 @@
 <!-- number input -->
 <div @include('bcrud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label for="{{ $field['name'] }}">{!! $field['label'] !!}</label>
     @include('bcrud::inc.field_translatable_icon')
 
     @if(isset($field['prefix']) || isset($field['suffix'])) <div class="input-group"> @endif
@@ -8,6 +8,7 @@
         <input
         	type="number"
         	name="{{ $field['name'] }}"
+            id="{{ $field['name'] }}"
             value="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}"
             @include('bcrud::inc.field_attributes')
         	>
