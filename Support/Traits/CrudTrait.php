@@ -16,8 +16,11 @@ trait CrudTrait
 
     public static function getPossibleEnumValues($field_name)
     {
+        $default_connection = Config::get('database.default');
+        $table_prefix = Config::get('database.connections.'.$default_connection.'.prefix');
+
         $instance = new static(); // create an instance of the model to be able to get the table name
-        $type = DB::select(DB::raw('SHOW COLUMNS FROM `'.Config::get('database.connections.'.env('DB_CONNECTION').'.prefix').$instance->getTable().'` WHERE Field = "'.$field_name.'"'))[0]->Type;
+        $type = DB::select(DB::raw('SHOW COLUMNS FROM `'.$table_prefix.$instance->getTable().'` WHERE Field = "'.$field_name.'"'))[0]->Type;
         preg_match('/^enum\((.*)\)$/', $type, $matches);
         $enum = [];
         foreach (explode(',', $matches[1]) as $value) {
@@ -46,10 +49,15 @@ trait CrudTrait
         // create an instance of the model to be able to get the table name
         $instance = new static();
 
-        // register the enum column type, because Doctrine doesn't support it
-        DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        $conn = DB::connection($instance->getConnectionName());
+        $table = Config::get('database.connections.'.env('DB_CONNECTION').'.prefix').$instance->getTable();
 
-        return ! DB::connection()->getDoctrineColumn($instance->getTable(), $column_name)->getNotnull();
+        // register the enum, json and jsonb column type, because Doctrine doesn't support it
+        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('json', 'json_array');
+        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('jsonb', 'json_array');
+
+        return ! $conn->getDoctrineColumn($table, $column_name)->getNotnull();
     }
 
     /*
@@ -77,7 +85,7 @@ trait CrudTrait
                     //IMAGINA
 
                     if(is_string($fake_field_value)) {
-                        $this->setAttribute($fake_field_name, $fake_field_value);
+                    $this->setAttribute($fake_field_name, $fake_field_value);
                     } elseif(is_array($fake_field_value)) {
                         $this->setAttribute($fake_field_name, implode(',',array_filter($fake_field_value, function($item) {
                             if(is_string($item)) return true;
@@ -151,7 +159,6 @@ trait CrudTrait
 
         // if a new file is uploaded, store it on disk and its filename in the database
         if ($request->hasFile($attribute_name) && $request->file($attribute_name)->isValid()) {
-
             // 1. Generate a new file name
             $file = $request->file($attribute_name);
             $new_file_name = md5($file->getClientOriginalName().time()).'.'.$file->getClientOriginalExtension();
@@ -229,7 +236,7 @@ trait CrudTrait
      *
      * @return [type] [description]
      */
-    public function getCastedAttributes() : array
+    public function getCastedAttributes()
     {
         return parent::getCasts();
     }

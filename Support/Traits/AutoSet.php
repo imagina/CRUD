@@ -14,6 +14,7 @@ trait AutoSet
      */
     public function setFromDb()
     {
+        $this->setDoctrineTypesMapping();
         $this->getDbColumnTypes();
 
         array_map(function ($field) {
@@ -23,18 +24,25 @@ trait AutoSet
                 'name'       => $field,
                 'label'      => ucfirst($field),
                 'value'      => null,
+                'default'    => isset($this->db_column_types[$field]['default']) ? $this->db_column_types[$field]['default'] : null,
                 'type'       => $this->getFieldTypeFromDbColumnType($field),
                 'values'     => [],
                 'attributes' => [],
+                'autoset'    => true,
             ];
-            $this->create_fields[$field] = $new_field;
-            $this->update_fields[$field] = $new_field;
+            if (! isset($this->create_fields[$field])) {
+                $this->create_fields[$field] = $new_field;
+            }
+            if (! isset($this->update_fields[$field])) {
+                $this->update_fields[$field] = $new_field;
+            }
 
-            if (! in_array($field, $this->model->getHidden())) {
+            if (! in_array($field, $this->model->getHidden()) && ! isset($this->columns[$field])) {
                 $this->columns[$field] = [
                     'name'  => $field,
                     'label' => ucfirst($field),
                     'type'  => $this->getFieldTypeFromDbColumnType($field),
+                    'autoset' => true,
                 ];
             }
         }, $this->getDbColumnsNames());
@@ -47,12 +55,14 @@ trait AutoSet
      */
     public function getDbColumnTypes()
     {
-        $table_columns = \Schema::getColumnListing($this->model->getTable());
+        $table = $this->model->getTable();
+        $conn = $this->model->getConnection();
+        $table_columns = $conn->getSchemaBuilder()->getColumnListing($table);
 
         foreach ($table_columns as $key => $column) {
-            $column_type = \Schema::getColumnType($this->model->getTable(), $column);
+            $column_type = $conn->getSchemaBuilder()->getColumnType($table, $column);
             $this->db_column_types[$column]['type'] = trim(preg_replace('/\(\d+\)(.*)/i', '', $column_type));
-            $this->db_column_types[$column]['default'] = ''; // no way to do this using DBAL?!
+            $this->db_column_types[$column]['default'] = $conn->getDoctrineSchemaManager()->listTableDetails($table)->getColumn($column)->getDefault();
         }
 
         return $this->db_column_types;
@@ -102,6 +112,9 @@ trait AutoSet
             break;
 
             case 'text':
+                return 'textarea';
+            break;
+
             case 'mediumtext':
             case 'longtext':
                 return 'textarea';
@@ -125,6 +138,18 @@ trait AutoSet
         }
     }
 
+    // Fix for DBAL not supporting enum
+    public function setDoctrineTypesMapping()
+    {
+        $types = ['enum' => 'string'];
+        $platform = \DB::getDoctrineConnection()->getDatabasePlatform();
+        foreach ($types as $type_key => $type_value) {
+            if (! $platform->hasDoctrineTypeMappingFor($type_key)) {
+                $platform->registerDoctrineTypeMapping($type_key, $type_value);
+            }
+        }
+    }
+
     /**
      * Turn a database column name or PHP variable into a pretty label to be shown to the user.
      *
@@ -145,7 +170,7 @@ trait AutoSet
     public function getDbColumnsNames()
     {
         // Automatically-set columns should be both in the database, and in the $fillable variable on the Eloquent Model
-        $columns = \Schema::getColumnListing($this->model->getTable());
+        $columns = $this->model->getConnection()->getSchemaBuilder()->getColumnListing($this->model->getTable());
         $fillable = $this->model->getFillable();
 
         if (! empty($fillable)) {
@@ -153,6 +178,6 @@ trait AutoSet
         }
 
         // but not updated_at, deleted_at
-        return array_values(array_diff($columns, [$this->model->getKeyName(), 'created_at', 'updated_at', 'deleted_at']));
+        return array_values(array_diff($columns, [$this->model->getKeyName(), $this->model->getCreatedAtColumn(), $this->model->getUpdatedAtColumn(), 'deleted_at']));
     }
 }

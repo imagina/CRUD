@@ -3,7 +3,7 @@
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    {{ trans('bcrud::crud.add') }} <span class="text-lowercase">{{ $crud->entity_name }}</span>
+	    {{ trans('bcrud::crud.add') }} <span>{{ $crud->entity_name }}</span>
 	  </h1>
 	  <ol class="breadcrumb">
 	    <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
@@ -18,8 +18,10 @@
 	<div class="col-md-8 col-md-offset-2">
 		<!-- Default box -->
 		@if ($crud->hasAccess('list'))
-			<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span></a><br><br>
+			<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
 		@endif
+
+		@include('bcrud::inc.grouped_errors')
 
 		  {!! Form::open(array('url' => $crud->route, 'method' => 'post', 'files'=>$crud->hasUploadFields('create'))) !!}
 		  <div class="box">
@@ -30,36 +32,15 @@
 		    <div class="box-body row">
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->
 		      @if(view()->exists('vendor.backpack.crud.form_content'))
-		      	@include('vendor.backpack.crud.form_content', ['fields' => $crud->getFields('create')])
+		      	@include('vendor.backpack.crud.form_content', [ 'fields' => $crud->getFields('create'), 'action' => 'create' ])
 		      @else
-		      	@include('bcrud::form_content', ['fields' => $crud->getFields('create')])
+		      	@include('bcrud::form_content', [ 'fields' => $crud->getFields('create'), 'action' => 'create' ])
 		      @endif
 		    </div><!-- /.box-body -->
 		    <div class="box-footer">
-		    	<div class="form-group">
-		    	  <span>{{ trans('bcrud::crud.after_saving') }}:</span>
-		          <div class="radio">
-		            <label>
-		              <input type="radio" name="redirect_after_save" value="{{ $crud->route }}" checked="">
-		              {{ trans('bcrud::crud.go_to_the_table_view') }}
-		            </label>
-		          </div>
-		          <div class="radio">
-		            <label>
-		              <input type="radio" name="redirect_after_save" value="{{ $crud->route.'/create' }}">
-		              {{ trans('bcrud::crud.let_me_add_another_item') }}
-		            </label>
-		          </div>
-		          <div class="radio">
-		            <label>
-		              <input type="radio" name="redirect_after_save" value="current_item_edit">
-		              {{ trans('bcrud::crud.edit_the_new_item') }}
-		            </label>
-		          </div>
-		        </div>
 
-			  <button type="submit" class="btn btn-success ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-save"></i> {{ trans('bcrud::crud.add') }}</span></button>
-		      <a href="{{ url($crud->route) }}" class="btn btn-default ladda-button" data-style="zoom-in"><span class="ladda-label">{{ trans('bcrud::crud.cancel') }}</span></a>
+                @include('bcrud::inc.form_save_buttons')
+
 		    </div><!-- /.box-footer-->
 
 		  </div><!-- /.box -->

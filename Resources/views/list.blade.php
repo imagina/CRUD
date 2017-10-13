@@ -1,12 +1,10 @@
 @extends('layouts.master')
 
-
-
-@section('content-header')
+@section('header')
 	<section class="content-header">
 	  <h1>
 	    <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
-	    <small>{{ trans('bcrud::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('bcrud::crud.in_the_database') }}.</small>
+	    <small>{{ trans('bcrud::crud.all') }} <span>{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
 	  </h1>
 	  <ol class="breadcrumb">
 	    <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
@@ -30,10 +28,10 @@
           <div id="datatable_button_stack" class="pull-right text-right"></div>
         </div>
 
-        <div class="box-body">
+        <div class="box-body table-responsive">
 
         {{-- Backpack List Filters --}}
-        @if ($crud->filters->count())
+        @if ($crud->filtersEnabled())
           @include('bcrud::inc.filters_navbar')
         @endif
 
@@ -41,16 +39,18 @@
             <thead>
               <tr>
                 @if ($crud->details_row)
-                  <th></th> <!-- expand/minimize button column -->
+                  <th data-orderable="false"></th> <!-- expand/minimize button column -->
                 @endif
 
                 {{-- Table columns --}}
                 @foreach ($crud->columns as $column)
-                  <th>{{ $column['label'] }}</th>
+                  <th {{ isset($column['orderable']) ? 'data-orderable=' .var_export($column['orderable'], true) : '' }}>
+                    {{ $column['label'] }}
+                  </th>
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
-                  <th>{{ trans('bcrud::crud.actions') }}</th>
+                  <th data-orderable="false">{{ trans('bcrud::crud.actions') }}</th>
                 @endif
               </tr>
             </thead>
@@ -124,15 +124,22 @@
 
 @section('after_styles')
   <!-- DATA TABLES -->
-    <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+  <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/crud.css') }}">
+  <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/form.css') }}">
+  <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/list.css') }}">
 
   <!-- CRUD LIST CONTENT - crud_list_styles stack -->
   @stack('crud_list_styles')
 @endsection
 
 @section('scripts')
-	<!-- DATA TABLES SCRIPT -->
+  	<!-- DATA TABLES SCRIPT -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
+
+    <script src="{{ asset('modules/bcrud/vendor/crud/js/crud.js') }}"></script>
+    <script src="{{ asset('modules/bcrud/vendor/crud/js/form.js') }}"></script>
+    <script src="{{ asset('modules/bcrud/vendor/crud/js/list.js') }}"></script>
 
     @if ($crud->exportButtons())
     <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
@@ -150,14 +157,6 @@
 
 	<script type="text/javascript">
 	  jQuery(document).ready(function($) {
-
-      $.ajaxPrefilter(function(options, originalOptions, xhr) {
-          var token = $('meta[name="token"]').attr('value');
-
-          if (token) {
-              return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-          }
-      });
 
       @if ($crud->exportButtons())
       var dtButtons = function(buttons){
@@ -205,14 +204,22 @@
               "aria": {
                   "sortAscending":  "{{ trans('bcrud::crud.aria.sortAscending') }}",
                   "sortDescending": "{{ trans('bcrud::crud.aria.sortDescending') }}"
-              }
+              },
+              "buttons": {
+                  "copy":   "{{ trans('bcrud::crud.export.copy') }}",
+                  "excel":  "{{ trans('bcrud::crud.export.excel') }}",
+                  "csv":    "{{ trans('bcrud::crud.export.csv') }}",
+                  "pdf":    "{{ trans('bcrud::crud.export.pdf') }}",
+                  "print":  "{{ trans('bcrud::crud.export.print') }}",
+                  "colvis": "{{ trans('bcrud::crud.export.column_visibility') }}"
+              },
           },
 
           @if ($crud->ajaxTable())
           "processing": true,
           "serverSide": true,
           "ajax": {
-              "url": "{{ url($crud->route.'/search').'?'.Request::getQueryString() }}",
+              "url": "{!! url($crud->route.'/search').'?'.Request::getQueryString() !!}",
               "type": "POST"
           },
           @endif
@@ -242,7 +249,13 @@
       $(".dt-buttons").appendTo($('#datatable_button_stack' ));
       @endif
 
+      $.ajaxPrefilter(function(options, originalOptions, xhr) {
+          var token = $('meta[('meta[name="token"]').attr('value');
 
+          if (token) {
+                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+          }
+      });
 
       // make the delete button work in the first result page
       register_delete_button_action();
@@ -301,15 +314,25 @@
 
       @if ($crud->details_row)
       function register_details_row_button_action() {
+        // var crudTable = $('#crudTable tbody');
+        // Remove any previously registered event handlers from draw.dt event callback
+        $('#crudTable tbody').off('click', 'td .details-row-button');
+
+        // Make sure the ajaxDatatables rows also have the correct classes
+        $('#crudTable tbody td .details-row-button').parent('td')
+          .removeClass('details-control').addClass('details-control')
+          .removeClass('text-center').addClass('text-center')
+          .removeClass('cursor-pointer').addClass('cursor-pointer');
+
         // Add event listener for opening and closing details
-        $('#crudTable tbody').on('click', 'td .details-row-button', function () {
+        $('#crudTable tbody td.details-control').on('click', function () {
             var tr = $(this).closest('tr');
-            var btn = $(this);
+            var btn = $(this).find('.details-row-button');
             var row = table.row( tr );
 
             if ( row.child.isShown() ) {
                 // This row is already open - close it
-                $(this).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+                btn.removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
                 $('div.table_row_slider', row.child()).slideUp( function () {
                     row.child.hide();
                     tr.removeClass('shown');
@@ -317,10 +340,10 @@
             }
             else {
                 // Open this row
-                $(this).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+                btn.removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
                 // Get the details with ajax
                 $.ajax({
-                  url: '{{ Request::url() }}/'+btn.data('entry-id')+'/details',
+                  url: '{{ url($crud->route) }}/'+btn.data('entry-id')+'/details',
                   type: 'GET',
                   // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
                   // data: {param1: 'value1'},

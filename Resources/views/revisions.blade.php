@@ -18,7 +18,7 @@
   <div class="col-md-10 col-md-offset-1">
     <!-- Default box -->
     @if ($crud->hasAccess('list'))
-      <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span></a><br><br>
+      <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
     @endif
 
     @if(!count($revisions))
@@ -32,4 +32,15 @@
     @endif
   </div>
 </div>
+@endsection
+
+
+@section('after_styles')
+  <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/crud.css') }}">
+  <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/revisions.css') }}">
+@endsection
+
+@section('scripts')
+  <script src="{{ asset('modules/bcrud/vendor/crud/js/crud.js') }}"></script>
+  <script src="{{ asset('modules/bcrud/vendor/crud/js/revisions.js') }}"></script>
 @endsection

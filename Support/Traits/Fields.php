@@ -15,12 +15,18 @@ trait Fields
      */
     public function addField($field, $form = 'both')
     {
-        // if the field_defition_array array is a string, it means the programmer was lazy and has only passed the name
+        // if the field_definition_array array is a string, it means the programmer was lazy and has only passed the name
         // set some default values, so the field will still work
         if (is_string($field)) {
             $complete_field_array['name'] = $field;
         } else {
             $complete_field_array = $field;
+        }
+
+        // if this is a relation type field and no corresponding model was specified, get it from the relation method
+        // defined in the main model
+        if (isset($complete_field_array['entity']) && ! isset($complete_field_array['model'])) {
+            $complete_field_array['model'] = $this->getRelationModel($complete_field_array['entity']);
         }
 
         // if the label is missing, we should set it
@@ -31,6 +37,13 @@ trait Fields
         // if the field type is missing, we should set it
         if (! isset($complete_field_array['type'])) {
             $complete_field_array['type'] = $this->getFieldTypeFromDbColumnType($complete_field_array['name']);
+        }
+
+        // if a tab was mentioned, we should enable it
+        if (isset($complete_field_array['tab'])) {
+            if (! $this->tabsEnabled()) {
+                $this->enableTabs();
+            }
         }
 
         // store the field information into the correct variable on the CRUD object
@@ -62,48 +75,73 @@ trait Fields
     }
 
     /**
-     * Moves the recently added field to 'after' the $target_field.
+     * Move the most recently added field after the given target field.
      *
-     * @param $target_field
+     * @param string $targetFieldName The target field name.
+     * @param string $form The CRUD form. Can be 'create', 'update' or 'both'. Default is 'both'.
      */
-    public function afterField($target_field)
+    public function afterField($targetFieldName, $form = 'both')
     {
-        foreach ($this->create_fields as $field => $value) {
-            if ($value['name'] == $target_field) {
-                array_splice($this->create_fields, $field + 1, 0, [$field => array_pop($this->create_fields)]);
+        $this->moveFieldInForm($targetFieldName, $form, false);
+    }
+
+    /**
+     * Move the most recently added field before the given target field.
+     *
+     * @param string $targetFieldName The target field name.
+     * @param string $form The CRUD form. Can be 'create', 'update' or 'both'. Default is 'both'.
+     */
+    public function beforeField($targetFieldName, $form = 'both')
+    {
+        $this->moveFieldInForm($targetFieldName, $form);
+    }
+
+    /**
+     * Move the most recently added field from a given form before or after the given target field. Default is before.
+     *
+     * @param string $targetFieldName The target field name.
+     * @param string $form The CRUD form. Can be 'create', 'update' or 'both'. Default is 'both'.
+     * @param bool $before If true, the field will be moved before the target field, otherwise it will be moved after it.
+     */
+    protected function moveFieldInForm($targetFieldName, $form = 'both', $before = true)
+    {
+        switch ($form) {
+            case 'create':
+                $this->moveField($this->create_fields, $targetFieldName, $before);
                 break;
-            }
-        }
-        foreach ($this->update_fields as $field => $value) {
-            if ($value['name'] == $target_field) {
-                array_splice($this->update_fields, $field + 1, 0, [$field => array_pop($this->update_fields)]);
+            case 'update':
+                $this->moveField($this->update_fields, $targetFieldName, $before);
                 break;
-            }
+            default:
+                $this->moveField($this->create_fields, $targetFieldName, $before);
+                $this->moveField($this->update_fields, $targetFieldName, $before);
+                break;
         }
     }
 
     /**
-     * Moves the recently added field to 'before' the $target_field.
+     * Move the most recently added field before or after the given target field. Default is before.
      *
-     * @param $target_field
+     * @param array $fields The form fields.
+     * @param string $targetFieldName The target field name.
+     * @param bool $before If true, the field will be moved before the target field, otherwise it will be moved after it.
      */
-    public function beforeField($target_field)
+    private function moveField(&$fields, $targetFieldName, $before = true)
     {
-        $key = 0;
-        foreach ($this->create_fields as $field => $value) {
-            if ($value['name'] == $target_field) {
-                array_splice($this->create_fields, $key, 0, [$field => array_pop($this->create_fields)]);
-                break;
+        if (array_key_exists($targetFieldName, $fields)) {
+            $targetFieldPosition = $before ? array_search($targetFieldName, array_keys($fields))
+                : array_search($targetFieldName, array_keys($fields)) + 1;
+
+            if ($targetFieldPosition >= (count($fields) - 1)) {
+                // target field name is same as element
+                return;
             }
-            $key++;
-        }
-        $key = 0;
-        foreach ($this->update_fields as $field => $value) {
-            if ($value['name'] == $target_field) {
-                array_splice($this->update_fields, $key, 0, [$field => array_pop($this->update_fields)]);
-                break;
-            }
-            $key++;
+
+            $element = array_pop($fields);
+            $beginningArrayPart = array_slice($fields, 0, $targetFieldPosition, true);
+            $endingArrayPart = array_slice($fields, $targetFieldPosition, null, true);
+
+            $fields = array_merge($beginningArrayPart, [$element['name'] => $element], $endingArrayPart);
         }
     }
 
@@ -147,6 +185,22 @@ trait Fields
     }
 
     /**
+     * Set label for a specific field.
+     *
+     * @param string $field
+     * @param string $label
+     */
+    public function setFieldLabel($field, $label)
+    {
+        if (isset($this->create_fields[$field])) {
+            $this->create_fields[$field]['label'] = $label;
+        }
+        if (isset($this->update_fields[$field])) {
+            $this->update_fields[$field]['label'] = $label;
+        }
+    }
+
+    /**
      * Check if field is the first of its type in the given fields array.
      * It's used in each field_type.blade.php to determine wether to push the css and js content or not (we only need to push the js and css for a field the first time it's loaded in the form, not any subsequent times).
      *
@@ -157,7 +211,9 @@ trait Fields
      */
     public function checkIfFieldIsFirstOfItsType($field, $fields_array)
     {
-        if ($field['name'] == $this->getFirstOfItsTypeInArray($field['type'], $fields_array)['name']) {
+        $first_field = $this->getFirstOfItsTypeInArray($field['type'], $fields_array);
+
+        if ($field['name'] == $first_field['name']) {
             return true;
         }
 
@@ -212,6 +268,15 @@ trait Fields
         }
 
         return $data;
+    }
+
+    public function getCurrentFields()
+    {
+        if ($this->entry) {
+            return $this->getUpdateFields($this->entry->getKey());
+        }
+
+        return $this->getCreateFields();
     }
 
     // ------------

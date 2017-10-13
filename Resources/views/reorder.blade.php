@@ -1,173 +1,176 @@
 @extends('layouts.master')
 
-@section('after_styles')
-    <link href="{{ asset('modules/bcrud/vendor/nestedSortable/nestedSortable.css') }}" rel="stylesheet" type="text/css" />
-@endsection
-
 @section('header')
-  <section class="content-header">
+<section class="content-header">
     <h1>
-      <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
-      <small>{{ trans('bcrud::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('bcrud::crud.in_the_database') }}.</small>
+        <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
+        <small>{{ trans('bcrud::crud.all') }} <span>{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
-      <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
-      <li class="active">{{ trans('bcrud::crud.reorder') }}</li>
+        <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
+        <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
+        <li class="active">{{ trans('bcrud::crud.reorder') }}</li>
     </ol>
-  </section>
+</section>
 @endsection
 
 @section('content')
 <?php
-  function tree_element($entry, $key, $all_entries, $crud)
-  {
+function tree_element($entry, $key, $all_entries, $crud)
+{
     if (!isset($entry->tree_element_shown)) {
-      // mark the element as shown
-      $all_entries[$key]->tree_element_shown = true;
-      $entry->tree_element_shown = true;
+        // mark the element as shown
+        $all_entries[$key]->tree_element_shown = true;
+        $entry->tree_element_shown = true;
 
-      // show the tree element
-      echo '<li id="list_'.$entry->getKey().'">';
-      echo '<div><span class="disclose"><span></span></span>'.$entry->{$crud->reorder_label}.'</div>';
+        // show the tree element
+        echo '<li id="list_'.$entry->getKey().'">';
+        echo '<div><span class="disclose"><span></span></span>'.object_get($entry, $crud->reorder_label).'</div>';
 
-      // see if this element has any children
-      $children = [];
-      foreach ($all_entries as $key => $subentry) {
-        if ($subentry->parent_id == $entry->getKey()) {
-          $children[] = $subentry;
+        // see if this element has any children
+        $children = [];
+        foreach ($all_entries as $key => $subentry) {
+            if ($subentry->parent_id == $entry->getKey()) {
+                $children[] = $subentry;
+            }
         }
-      }
 
-      $children = collect($children)->sortBy('lft');
+        $children = collect($children)->sortBy('lft');
 
-      // if it does have children, show them
-      if (count($children)) {
-        echo '<ol>';
-        foreach ($children as $key => $child) {
-          $children[$key] = tree_element($child, $child->getKey(), $all_entries, $crud);
+        // if it does have children, show them
+        if (count($children)) {
+            echo '<ol>';
+            foreach ($children as $key => $child) {
+                $children[$key] = tree_element($child, $child->getKey(), $all_entries, $crud);
+            }
+            echo '</ol>';
         }
-        echo '</ol>';
-      }
-      echo '</li>';
+        echo '</li>';
     }
 
     return $entry;
-  }
+}
 
- ?>
+?>
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-8 col-md-offset-2">
     @if ($crud->hasAccess('list'))
-      <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span></a><br><br>
+        <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('bcrud::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
     @endif
 
-      <!-- Default box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">{{ trans('bcrud::crud.reorder').' '.$crud->entity_name_plural }}</h3>
-        </div>
-        <div class="box-body">
+        <!-- Default box -->
+        <div class="box">
 
-          <p>{{ trans('bcrud::crud.reorder_text') }}</p>
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ trans('bcrud::crud.reorder').' '.$crud->entity_name_plural }}</h3>
+            </div>
 
-          <ol class="sortable">
-            <?php
-              $all_entries = collect($entries->all())->sortBy('lft')->keyBy($crud->getModel()->getKeyName());
-              $root_entries = $all_entries->filter(function($item) {
-                return $item->parent_id == 0;
-              });
-             ?>
-            @foreach ($root_entries as $key => $entry)
-              <?php
-                $root_entries[$key] = tree_element($entry, $key, $all_entries, $crud);
-              ?>
-            @endforeach
-          </ol>
+            <div class="box-body">
 
-          <button id="toArray" class="btn btn-success ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-save"></i> {{ trans('bcrud::crud.save') }}</span></button>
+                <p>{{ trans('bcrud::crud.reorder_text') }}</p>
 
-        </div><!-- /.box-body -->
-      </div><!-- /.box -->
-  </div>
+                <ol class="sortable">
+                <?php
+                    $all_entries = collect($entries->all())->sortBy('lft')->keyBy($crud->getModel()->getKeyName());
+                    $root_entries = $all_entries->filter(function ($item) {
+                        return $item->parent_id == 0;
+                    });
+                    foreach ($root_entries as $key => $entry){
+                        $root_entries[$key] = tree_element($entry, $key, $all_entries, $crud);
+                    }
+                ?>
+                </ol>
+
+                <button id="toArray" class="btn btn-success ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-save"></i> {{ trans('bcrud::crud.save') }}</span></button>
+
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
 </div>
 @endsection
 
-@section('scripts')
-  <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js" type="text/javascript"></script>
-  <script src="{{ url('modules/bcrud/vendor/nestedSortable/jquery.mjs.nestedSortable2.js') }}" type="text/javascript"></script>
 
-  <script type="text/javascript">
+@section('after_styles')
+<link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/nestedSortable/nestedSortable.css') }}">
+<link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/crud.css') }}">
+<link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/reorder.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('modules/bcrud/vendor/crud/js/crud.js') }}"></script>
+<script src="{{ asset('modules/bcrud/vendor/crud/js/reorder.js') }}"></script>
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js" type="text/javascript"></script>
+<script src="{{ url('modules/bcrud/vendor/nestedSortable/jquery.mjs.nestedSortable2.js') }}" type="text/javascript"></script>
+
+<script type="text/javascript">
     jQuery(document).ready(function($) {
 
-        $.ajaxPrefilter(function(options, originalOptions, xhr) {
-            var token = $('meta[name="token"]').attr('value');
+    // initialize the nested sortable plugin
+    $('.sortable').nestedSortable({
+        forcePlaceholderSize: true,
+        handle: 'div',
+        helper: 'clone',
+        items: 'li',
+        opacity: .6,
+        placeholder: 'placeholder',
+        revert: 250,
+        tabSize: 25,
+        tolerance: 'pointer',
+        toleranceElement: '> div',
+        maxLevels: {{ $crud->reorder_max_level or 3 }},
 
-            if (token) {
-                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-            }
-        });
+        isTree: true,
+        expandOnHover: 700,
+        startCollapsed: false
+    });
 
-      // initialize the nested sortable plugin
-      $('.sortable').nestedSortable({
-            forcePlaceholderSize: true,
-            handle: 'div',
-            helper: 'clone',
-            items: 'li',
-            opacity: .6,
-            placeholder: 'placeholder',
-            revert: 250,
-            tabSize: 25,
-            tolerance: 'pointer',
-            toleranceElement: '> div',
-            maxLevels: {{ $crud->reorder_max_level or 3 }},
-
-            isTree: true,
-            expandOnHover: 700,
-            startCollapsed: false
-        });
-
-      $('.disclose').on('click', function() {
+    $('.disclose').on('click', function() {
         $(this).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');
-      });
+    });
 
-      $('#toArray').click(function(e){
+    $('#toArray').click(function(e){
         // get the current tree order
         arraied = $('ol.sortable').nestedSortable('toArray', {startDepthCount: 0});
 
         // log it
-        console.log(arraied);
+        //console.log(arraied);
 
         // send it with POST
-          $.ajax({
+        $.ajax({
             url: '{{ Request::url() }}',
             type: 'POST',
             data: { tree: arraied },
-          })
-          .done(function() {
-            console.log("success");
+        })
+        .done(function() {
+            //console.log("success");
             new PNotify({
                         title: "{{ trans('bcrud::crud.reorder_success_title') }}",
                         text: "{{ trans('bcrud::crud.reorder_success_message') }}",
                         type: "success"
                     });
           })
-          .fail(function() {
-            console.log("error");
+        .fail(function() {
+            //console.log("error");
             new PNotify({
                         title: "{{ trans('bcrud::crud.reorder_error_title') }}",
                         text: "{{ trans('bcrud::crud.reorder_error_message') }}",
                         type: "danger"
                     });
           })
-          .always(function() {
+        .always(function() {
             console.log("complete");
-          });
-
-      });
-
-
+        });
 
     });
-  </script>
+
+    $.ajaxPrefilter(function(options, originalOptions, xhr) {
+        var token = $('meta[('meta[name="token"]').attr('value');
+
+        if (token) {
+            return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+        }
+    });
+
+});
+</script>
 @endsection

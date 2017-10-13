@@ -4,24 +4,25 @@
     @include('bcrud::inc.field_translatable_icon')
     <?php $entity_model = $crud->model; ?>
     <select
-    	name="{{ $field['name'] }}"
-        @include('bcrud::inc.field_attributes', ['default_class' =>  'form-control select2'])
-    	>
+        name="{{ $field['name'] }}"
+        style="width: 100%"
+        @include('bcrud::inc.field_attributes', ['default_class' =>  'form-control select2_field'])
+        >
 
-    	@if ($entity_model::isColumnNullable($field['name']))
+        @if ($entity_model::isColumnNullable($field['name']))
             <option value="">-</option>
         @endif
 
-	    	@if (isset($field['model']))
-	    		@foreach ($field['model']::all() as $connected_entity_entry)
-	    			<option value="{{ $connected_entity_entry->getKey() }}"
-						@if ( ( old($field['name']) && old($field['name']) == $connected_entity_entry->getKey() ) || (isset($field['value']) && $connected_entity_entry->getKey()==$field['value']))
-							 selected
-						@endif
-	    			>{{ $connected_entity_entry->{$field['attribute']} }}</option>
-	    		@endforeach
-	    	@endif
-	</select>
+            @if (isset($field['model']))
+                @foreach ($field['model']::all() as $connected_entity_entry)
+                    <option value="{{ $connected_entity_entry->getKey() }}"
+                        @if ( ( old($field['name']) && old($field['name']) == $connected_entity_entry->getKey() ) || (isset($field['value']) && $connected_entity_entry->getKey()==$field['value']))
+                             selected
+                        @endif
+                    >{{ $connected_entity_entry->{$field['attribute']} }}</option>
+                @endforeach
+            @endif
+    </select>
 
     {{-- HINT --}}
     @if (isset($field['hint']))
@@ -37,21 +38,23 @@
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
         <!-- include select2 css-->
-        <link href="{{ asset('modules/bcrud/vendor/select2/select2.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('modules/bcrud/vendor/select2/select2-bootstrap-dick.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('vendor/adminlte/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
     @endpush
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
         <!-- include select2 js-->
-        <script src="{{ asset('modules/bcrud/vendor/select2/select2.js') }}"></script>
+        <script src="{{ asset('vendor/adminlte/plugins/select2/select2.min.js') }}"></script>
         <script>
             jQuery(document).ready(function($) {
                 // trigger select2 for each untriggered select2 box
-                $('.select2').each(function (i, obj) {
-                    if (!$(obj).data("select2"))
+                $('.select2_field').each(function (i, obj) {
+                    if (!$(obj).hasClass("select2-hidden-accessible"))
                     {
-                        $(obj).select2();
+                        $(obj).select2({
+                            theme: "bootstrap"
+                        });
                     }
                 });
             });

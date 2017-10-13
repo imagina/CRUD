@@ -94,10 +94,10 @@ if (is_array($value)) {
                     var id = null;
 
                     // RegExps for YouTube link forms
-                	var youtubeStandardExpr = /^https?:\/\/(www\.)?youtube.com\/watch\?v=([^?&]+)/i; // Group 2 is video ID
-                	var youtubeAlternateExpr = /^https?:\/\/(www\.)?youtube.com\/v\/([^\/\?]+)/i; // Group 2 is video ID
-                	var youtubeShortExpr = /^https?:\/\/youtu.be\/([^\/]+)/i; // Group 1 is video ID
-                	var youtubeEmbedExpr = /^https?:\/\/(www\.)?youtube.com\/embed\/([^\/]+)/i; // Group 2 is video ID
+                    var youtubeStandardExpr = /^https?:\/\/(www\.)?youtube.com\/watch\?v=([^?&]+)/i; // Group 2 is video ID
+                    var youtubeAlternateExpr = /^https?:\/\/(www\.)?youtube.com\/v\/([^\/\?]+)/i; // Group 2 is video ID
+                    var youtubeShortExpr = /^https?:\/\/youtu.be\/([^\/]+)/i; // Group 1 is video ID
+                    var youtubeEmbedExpr = /^https?:\/\/(www\.)?youtube.com\/embed\/([^\/]+)/i; // Group 2 is video ID
 
                     var match = link.match(youtubeStandardExpr);
 
@@ -172,7 +172,7 @@ if (is_array($value)) {
 
                 var fetchVimeo = function( videoId, callback ){
 
-                    var api = 'http://vimeo.com/api/v2/video/' + videoId + '.json?callback=?';
+                    var api = 'https://vimeo.com/api/v2/video/' + videoId + '.json?callback=?';
 
                     var video = {
                         provider: 'vimeo',

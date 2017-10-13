@@ -1,4 +1,14 @@
-  <div class="form-group col-md-12 image" data-preview="#{{ $field['name'] }}" data-aspectRatio="{{ isset($field['aspect_ratio']) ? $field['aspect_ratio'] : 0 }}" data-crop="{{ isset($field['crop']) ? $field['crop'] : false }}" @include('bcrud::inc.field_wrapper_attributes')>
+@php
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['class']))
+    {
+        $field['wrapperAttributes']['class'] = "form-group col-md-12 image";
+    }
+@endphp
+
+  <div data-preview="#{{ $field['name'] }}"
+        data-aspectRatio="{{ isset($field['aspect_ratio']) ? $field['aspect_ratio'] : 0 }}"
+        data-crop="{{ isset($field['crop']) ? $field['crop'] : false }}"
+        @include('bcrud::inc.field_wrapper_attributes')>
     <div>
         <label>{!! $field['label'] !!}</label>
         @include('bcrud::inc.field_translatable_icon')
@@ -6,7 +16,7 @@
     <!-- Wrap the image or canvas element with a block element (container) -->
     <div class="row">
         <div class="col-sm-6" style="margin-bottom: 20px;">
-            <img id="mainImage" src="{{ url(old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : 'modules/bcrud/img/default.jpg') )) }}?v={{bin2hex(random_bytes(5))}}">
+            <img id="mainImage" src="{{ url( (isset($field['prefix']) ? $field['prefix'] : '') . (old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : 'modules/bcrud/img/default.jpg') ))) }}">
         </div>
         @if(isset($field['crop']) && $field['crop'])
         <div class="col-sm-3">
@@ -53,7 +63,7 @@
             .hide {
                 display: none;
             }
-            .btn-group {
+            .image .btn-group {
                 margin-top: 10px;
             }
             img {
@@ -130,8 +140,7 @@
                         $remove.hide();
                     }
                     // Initialise hidden form input in case we submit with no change
-                    $urlimg=$mainImage.attr('src').split('?');
-                    $hiddenImage.val($urlimg[0]);
+                    $hiddenImage.val($mainImage.attr('src'));
 
 
                     // Only initialize cropper plugin if crop is set to true
@@ -175,7 +184,7 @@
                                     $mainImage.cropper(options).cropper("reset", true).cropper("replace", this.result);
                                     // Override form submit to copy canvas to hidden input before submitting
                                     $('form').submit(function() {
-                                        var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL();
+                                        var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL(file.type);
                                         $hiddenImage.val(imageURL);
                                         return true; // return false to cancel form action
                                     });

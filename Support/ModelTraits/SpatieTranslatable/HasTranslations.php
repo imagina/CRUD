@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Bcrud\Support\ModelTraits\Translatable;
+namespace Modules\Bcrud\ModelTraits\SpatieTranslatable;
 
-use Spatie\Translatable\HasTranslations;
+use Spatie\Translatable\HasTranslations as OriginalHasTranslations;
 
-trait SpatieTranslatableAdaptor
+trait HasTranslations
 {
-    use HasTranslations;
+    use OriginalHasTranslations;
 
     /**
      * @var bool
@@ -33,7 +33,12 @@ trait SpatieTranslatableAdaptor
 
         $translation = $this->getTranslation($key, $this->locale ?: config('app.locale'));
 
-        return is_array($translation) ? array_first($translation) : $translation;
+        // if it's a fake field, json_encode it
+        if (is_array($translation)) {
+            return json_encode($translation);
+        }
+
+        return $translation;
     }
 
     /*
@@ -134,6 +139,21 @@ trait SpatieTranslatableAdaptor
     }
 
     /**
+     * Get the locale property. Used in SpatieTranslatableSluggableService
+     * to save the slug for the appropriate language.
+     *
+     * @param string
+     */
+    public function getLocale()
+    {
+        if ($this->locale) {
+            return $this->locale;
+        }
+
+        return \Request::input('locale', \App::getLocale());
+    }
+
+    /**
      * Magic method to get the db entries already translated in the wanted locale.
      *
      * @param string $method
@@ -147,12 +167,17 @@ trait SpatieTranslatableAdaptor
             case 'find':
             case 'findOrFail':
             case 'findMany':
+            case 'findBySlug':
+            case 'findBySlugOrFail':
 
                 $translation_locale = \Request::input('locale', \App::getLocale());
 
                 if ($translation_locale) {
                     $item = parent::__call($method, $parameters);
-                    $item->setLocale($translation_locale);
+
+                    if ($item) {
+                        $item->setLocale($translation_locale);
+                    }
 
                     return $item;
                 }
