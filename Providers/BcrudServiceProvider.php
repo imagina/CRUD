@@ -3,6 +3,7 @@
 namespace Modules\Bcrud\Providers;
 
 use Route;
+use Modules\Bcrud\CrudRouter;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Traits\CanPublishConfiguration;
 
@@ -205,10 +206,10 @@ class BcrudServiceProvider extends ServiceProvider
         return [];
     }
 
-
-    public static function resource($name, $controller, array $options = [])
+    //IMAGINA
+    public static function resource($module,$name, $controller, array $options = [])
     {
-        return new CrudRouter($name, $controller, $options);
+        return new CrudRouter($module, $name, $controller, $options);
     }
 
     /**

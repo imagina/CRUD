@@ -136,7 +136,7 @@ class BcrudController extends AdminBaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('bcrud::crud.insert_success'))->flash();
+        //\Alert::success(trans('bcrud::crud.insert_success'))->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
@@ -197,7 +197,7 @@ class BcrudController extends AdminBaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('bcrud::crud.update_success'))->flash();
+        //\Alert::success(trans('bcrud::crud.update_success'))->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
