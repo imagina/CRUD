@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Bcrud\ModelTraits\SpatieTranslatable;
+namespace Modules\Bcrud\Support\ModelTraits\SpatieTranslatable;
 
 use Spatie\Translatable\HasTranslations as OriginalHasTranslations;
 
@@ -39,6 +39,22 @@ trait HasTranslations
         }
 
         return $translation;
+    }
+
+    public function getTranslations($key) : array
+    {
+        $this->guardAgainstUntranslatableAttribute($key);
+
+        $decoded = array();
+
+        $decoded = json_decode($this->getAttributes()[$key] ?? '' ?: '{}', true);
+        if(is_null($decoded)) {
+            $decoded = array($this->locale => ($this->getAttributes()[$key] ?? ''));
+        }
+
+        return $decoded;
+
+        //return json_decode($this->getAttributes()[$key] ?? '' ?: '{}', true);
     }
 
     /*
