@@ -6,7 +6,7 @@
       <span>{{ ucfirst($crud->entity_name) }}</span> {{ trans('bcrud::crud.revisions') }}
     </h1>
     <ol class="breadcrumb">
-      <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'),'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
+      <li><a href="{{ url('dashboard.index') }}"><i class="fa fa-dashboard"></i> {{ trans('core::core.breadcrumb.home') }}</a></li>
       <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
       <li class="active">{{ trans('bcrud::crud.revisions') }}</li>
     </ol>

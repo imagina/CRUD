@@ -26,8 +26,9 @@ return [
     'add_a_new'           => 'Add a new ',
 
     // Edit form
-    'edit'                 => 'Edit',
-    'save'                 => 'Save',
+    'edit' => 'Edit',
+    'save' => 'Save',
+    'additional' => 'Additional',
 
     // Revisions
     'revisions'            => 'Revisions',

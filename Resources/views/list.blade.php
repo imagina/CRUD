@@ -4,7 +4,7 @@
 	<section class="content-header">
 	  <h1>
 	    <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
-	    <small>{{ trans('bcrud::crud.all') }} <span>{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
+	    <small>{{ trans('bcrud::crud.all') }} <span>{{ $crud->entity_name_plural }}</span> {{ trans('bcrud::crud.in_the_database') }}.</small>
 	  </h1>
 	  <ol class="breadcrumb">
 	    <li><a href="{{ url(config('bcrud.backpack.base.route_prefix'), 'dashboard') }}">{{ trans('bcrud::crud.admin') }}</a></li>
@@ -124,7 +124,7 @@
 
 @section('after_styles')
   <!-- DATA TABLES -->
-  <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+  <link href="{{ asset('modules/bcrud/vendor/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/crud.css') }}">
   <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/form.css') }}">
   <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/list.css') }}">
@@ -135,7 +135,7 @@
 
 @section('scripts')
   	<!-- DATA TABLES SCRIPT -->
-    <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
+    <script src="{{asset('modules/bcrud/vendor/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
 
     <script src="{{ asset('modules/bcrud/vendor/crud/js/crud.js') }}"></script>
     <script src="{{ asset('modules/bcrud/vendor/crud/js/form.js') }}"></script>
@@ -153,10 +153,18 @@
     <script src="//cdn.datatables.net/buttons/1.2.2/js/buttons.colVis.min.js" type="text/javascript"></script>
     @endif
 
-    <script src="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.js') }}" type="text/javascript"></script>
-
+    <script src="{{ asset('modules/bcrud/vendor/datatables/dataTables.bootstrap.js') }}" type="text/javascript"></script>
 	<script type="text/javascript">
 	  jQuery(document).ready(function($) {
+
+      $.ajaxPrefilter(function(options, originalOptions, xhr) {
+          var token = $('meta[name="token"]').attr('value');
+
+          if (token) {
+              return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+          }
+      });
+
 
       @if ($crud->exportButtons())
       var dtButtons = function(buttons){
@@ -249,13 +257,7 @@
       $(".dt-buttons").appendTo($('#datatable_button_stack' ));
       @endif
 
-      $.ajaxPrefilter(function(options, originalOptions, xhr) {
-          var token = $('meta[('meta[name="token"]').attr('value');
 
-          if (token) {
-                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
-          }
-      });
 
       // make the delete button work in the first result page
       register_delete_button_action();

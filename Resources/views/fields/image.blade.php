@@ -140,7 +140,8 @@
                         $remove.hide();
                     }
                     // Initialise hidden form input in case we submit with no change
-                    $hiddenImage.val($mainImage.attr('src'));
+                    $urlimg=$mainImage.attr('src').split('?');
+                    $hiddenImage.val($urlimg[0]);
 
 
                     // Only initialize cropper plugin if crop is set to true

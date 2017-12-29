@@ -38,17 +38,17 @@ if (isset($field['value']) && ( $field['value'] instanceof \Carbon\Carbon || $fi
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
-    <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datepicker/datepicker3.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.datetimepicker/4.17.42/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="{!!asset('modules/bcrud/vendor/datepicker/datepicker3.css')!!}" />
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.datetimepicker/4.17.42/css/bootstrap-datetimepicker.min.css" />
     @endpush
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-    <script src="{{ asset('vendor/adminlte/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('vendor/adminlte/plugins/daterangepicker/moment.min.js') }}"></script>
+        <script charset="UTF-8" src="{!!asset('modules/bcrud/vendor/datepicker/bootstrap-datepicker.js')!!}"></script>
+        <script charset="UTF-8" src="{!! asset('modules/bcrud/vendor/daterangepicker/moment.min.js') !!}"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.datetimepicker/4.17.42/js/bootstrap-datetimepicker.min.js"></script>
     @if ($field_language !== 'en')
-        <script charset="UTF-8" src="{{ asset('vendor/adminlte/plugins/datepicker/locales/bootstrap-datepicker.'.$field_language.'.js') }}"></script>
+        <script type="text/javascript" src=" {{asset('modules/bcrud/vendor/datepicker/locales/bootstrap-datepicker.'.$field_language.'.js') }}"></script>
         <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/locale/{{$field_language}}.js"></script>
     @endif
     <script>

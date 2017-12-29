@@ -26,7 +26,6 @@
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-        <script src="{{ asset('modules/bcrud/vendor/ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('modules/bcrud/vendor/ckeditor/adapters/jquery.js') }}"></script>
     @endpush
 
@@ -37,8 +36,9 @@
 <script>
     jQuery(document).ready(function($) {
         $('textarea[name="{{ $field['name'] }}"].ckeditor').ckeditor({
-            "filebrowserBrowseUrl": "{{ url(config('bcrud.backpack.base.route_prefix').'/elfinder/ckeditor') }}",
-            "extraPlugins" : '{{ isset($field['extra_plugins']) ? implode(',', $field['extra_plugins']) : 'oembed,widget' }}'
+            "filebrowserBrowseUrl": "{{ route('media.grid.ckeditor') }}",
+            "extraPlugins" : '{{ isset($field['extra_plugins']) ? implode(',', $field['extra_plugins']) : 'oembed,widget' }}',
+            "skin": 'bootstrapck'
         });
     });
 </script>

@@ -11,7 +11,7 @@
 
 {{-- Define blade stacks so css and js can be pushed from the fields to these sections. --}}
 
-@section('after_styles')
+@section('styles')
     <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/crud.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/form.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/crud/css/'.$action.'.css') }}">

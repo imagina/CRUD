@@ -2,7 +2,7 @@
 <!-- Used in Backpack\MenuCRUD -->
 
 <?php
-    $field['options'] = ['page_link' => trans('bcrud::crud.page_link'), 'internal_link' => trans('backpack::crud.internal_link'), 'external_link' => trans('backpack::crud.external_link')];
+    $field['options'] = ['page_link' => trans('bcrud::crud.page_link'), 'internal_link' => trans('bcrud::crud.internal_link'), 'external_link' => trans('bcrud::crud.external_link')];
     $field['allows_null'] = false;
     $page_model = $field['page_model'];
     $active_pages = $page_model::all();

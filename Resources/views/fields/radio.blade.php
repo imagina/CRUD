@@ -21,35 +21,36 @@
         @foreach ($field['options'] as $value => $label )
             @php ($optionPointer++)
 
-            @if( isset($field['inline']) && $field['inline'] )
+                @if( isset($field['inline']) && $field['inline'] )
 
-            <label class="radio-inline" for="{{$field['name']}}_{{$optionPointer}}">
-                <input  type="radio"
-                        id="{{$field['name']}}_{{$optionPointer}}"
-                        name="{{$field['name']}}"
-                        value="{{$value}}"
-                        @include('bcrud::inc.field_attributes')
-                        {{$optionValue == $value ? ' checked': ''}}
+                    <label class="radio-inline" for="{{$field['name']}}_{{$optionPointer}}">
+                        <input type="radio"
+                               id="{{$field['name']}}_{{$optionPointer}}"
+                               name="{{$field['name']}}"
+                               value="{{$value}}"
+                                @include('bcrud::inc.field_attributes')
+                                {{$optionValue == $value ? ' checked': ''}}
                         > {!! $label !!}
-            </label>
+                    </label>
 
-            @else
+                @else
 
-            <div class="radio">
-                <label for="{{$field['name']}}_{{$optionPointer}}">
-                    <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}" value="{{$value}}" {{$optionValue == $value ? ' checked': ''}}> {!! $label !!}
-                </label>
-            </div>
+                    <div class="radio">
+                        <label for="{{$field['name']}}_{{$optionPointer}}">
+                            <input type="radio" id="{{$field['name']}}_{{$optionPointer}}" name="{{$field['name']}}"
+                                   value="{{$value}}" {{$optionValue == $value ? ' checked': ''}}> {!! $label !!}
+                        </label>
+                    </div>
 
-            @endif
+                @endif
 
-        @endforeach
+                @endforeach
 
-    @endif
+                @endif
 
-    {{-- HINT --}}
-    @if (isset($field['hint']))
-        <p class="help-block">{!! $field['hint'] !!}</p>
-    @endif
+                {{-- HINT --}}
+                @if (isset($field['hint']))
+                    <p class="help-block">{!! $field['hint'] !!}</p>
+                @endif
 
 </div>

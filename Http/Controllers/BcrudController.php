@@ -43,10 +43,16 @@ class BcrudController extends AdminBaseController
                 'pnotifycss' => 'modules/bcrud/vendor/pnotify/pnotify.custom.min.css'
             ];
 
+
 			//Imagina
+            $adminassets =  config()->get('asgard.core.core.admin-assets');
+            $adminassets["ckeditor.js"] = ['module' => 'bcrud:vendor/ckeditor/ckeditor.js'];
+            \Config::set('asgard.core.core.admin-assets', $adminassets);
+
             $this->assetManager->addAssets($pnotify);
             $this->assetPipeline->requireJs('pnotifyjs');
             $this->assetPipeline->requireCss('pnotifycss');
+
 
             // call the setup function inside this closure to also have the request there
             // this way, developers can use things stored in session (auth variables, etc)

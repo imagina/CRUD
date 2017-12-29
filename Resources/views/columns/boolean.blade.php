@@ -4,13 +4,13 @@
         @if ( isset( $column['options'][1] ) )
             {!! $column['options'][1] !!}
         @else
-            {{ Lang::has('backpack::crud.yes')?trans('bcrud::crud.yes'):'Yes' }}
+            {{ Lang::has('bcrud::crud.yes')?trans('bcrud::crud.yes'):'Yes' }}
         @endif
     @else
         @if ( isset( $column['options'][0] ) )
             {!! $column['options'][0] !!}
         @else
-            {{ Lang::has('backpack::crud.no')?trans('bcrud::crud.no'):'No' }}
+            {{ Lang::has('bcrud::crud.no')?trans('bcrud::crud.no'):'No' }}
         @endif
     @endif
 </td>

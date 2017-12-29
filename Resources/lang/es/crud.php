@@ -28,6 +28,7 @@ return [
     // Edit form
     'edit'                 => 'Editar',
     'save'                 => 'Guardar',
+    'additional'           => 'Adicional',
 
     // Revisions
     'revisions'            => 'Las revisiones',

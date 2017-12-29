@@ -45,13 +45,13 @@
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
-    <link rel="stylesheet" href="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/bcrud/vendor/daterangepicker/daterangepicker.css') }}">
     @endpush
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-    <script src="{{ asset('/vendor/adminlte/plugins/daterangepicker/moment.min.js') }}"></script>
-    <script src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{!!asset('modules/bcrud/vendor/daterangepicker/moment.min.js')!!}"></script>
+    <script src="{!!asset('modules/bcrud/vendor/daterangepicker/daterangepicker.js')!!}"></script>
     <script>
         jQuery(document).ready(function($){
             $('[data-bs-daterangepicker]').each(function(){
