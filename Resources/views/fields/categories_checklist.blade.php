@@ -22,7 +22,7 @@
 
 
                     @if(count($connected_entity_entry->children))
-                        @include('iblog::admin.fields.categories_checklist_child',['children' => $connected_entity_entry->children])
+                        @include('bcrud::fields.categories_checklist_child',['children' => $connected_entity_entry->children])
                     @endif
                    </li>
 

@@ -9,13 +9,14 @@
             "email": "dev@imaginacolombia.com"
         }
     ],
-	
+
 	"require": {
         "php": ">=7.0",
         "composer/installers": "~1.0",
         "livecontrol/eloquent-datatable": "^0.1.5",
         "venturecraft/revisionable": "1.*",
-        "intervention/image": "^2.3"
+        "intervention/image": "^2.3",
+        "spatie/laravel-translatable": "^2.1"
     },
 
     "autoload": {
