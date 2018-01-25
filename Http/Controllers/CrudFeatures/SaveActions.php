@@ -53,7 +53,7 @@ trait SaveActions
         }
 
         if (session('save_action', 'save_and_back') !== $saveAction) {
-            \Alert::info(trans('bcrud::crud.save_action_changed_notification'))->flash();
+            //\Alert::info(trans('bcrud::crud.save_action_changed_notification'))->flash();
         }
 
         session(['save_action' => $saveAction]);
